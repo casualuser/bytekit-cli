@@ -156,6 +156,15 @@ class Bytekit_TextUI_Command
 
             exit(0);
         }
+
+        if (count($files) == 1) {
+            require 'Bytekit/Disassembler.php';
+
+            $disassembler = new Bytekit_Disassembler;
+            $disassembler->disassemble($files[0]);
+
+            exit(0);
+        }
     }
 
     /**
