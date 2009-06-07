@@ -42,7 +42,7 @@
  */
 
 /**
- * Disassembler.
+ * Printer for result sets from Bytekit_Disassembler::disassemble().
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
@@ -51,61 +51,64 @@
  * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
  * @since     Class available since Release 1.0.0
  */
-class Bytekit_Disassembler
+class Bytekit_TextUI_ResultPrinter_Disassembler_Text
 {
     /**
-     * Wrapper for bytekit_disassemble_file().
+     * Prints a result set from Bytekit_Disassembler::disassemble().
      *
-     * @param  string $file
-     * @return array
+     * @param array $result
      */
-    public function disassemble($file)
+    public function printResult(array $result)
     {
-        $bytecode = @bytekit_disassemble_file($file);
-        $result   = array();
+        foreach ($result as $file => $functions) {
+            $first = TRUE;
 
-        foreach ($bytecode['functions'] as $function => $oplines) {
-            $cv  = array();
-            $ops = array();
-
-            if (isset($oplines['raw']['cv'])) {
-                foreach ($oplines['raw']['cv'] as $key => $name) {
-                    $cv[] = sprintf('!%d = $%s', $key, $name);
-                }
-            }
-
-            foreach ($oplines['code'] as $opline) {
-                if (!isset($ops[$oplines['raw']['opcodes'][$opline['opline']]['lineno']])) {
-                    $ops[$oplines['raw']['opcodes'][$opline['opline']]['lineno']] = array();
-                }
-
-                $ops[$oplines['raw']['opcodes'][$opline['opline']]['lineno']][] = array(
-                  'mnemonic' => $opline['mnemonic'],
-                  'operands' => $this->getOperands($opline['operands'])
+            foreach ($functions as $name => $data) {
+                printf(
+                  "%sFilename:           %s\n" .
+                  "Function:           %s\n" .
+                  "Number of oplines:  %d\n",
+                  $first ? '' : "\n",
+                  $file,
+                  $name,
+                  $data['num_ops']
                 );
+
+                if (!empty($data['cv'])) {
+                    printf(
+                      "Compiled variables: %s\n",
+                      join(', ', $data['cv'])
+                    );
+                }
+
+                print "\n  line  #     opcode                           operands\n" .
+                      "  -----------------------------------------------------------------------------\n";
+
+                $op = 0;
+
+                foreach ($data['ops'] as $line => $ops) {
+                    $first = TRUE;
+
+                    foreach ($ops as $_op) {
+                        if ($first) {
+                            $first = FALSE;
+                        } else {
+                            $line = '';
+                        }
+
+                        printf(
+                          "  %-5s %-5d %-32s %s\n",
+                          $line,
+                          $op++,
+                          $_op['mnemonic'],
+                          $_op['operands']
+                        );
+                    }
+                }
+
+                print "\n";
             }
-
-            $result[$function] = array(
-              'cv' => $cv, 'ops' => $ops, 'num_ops' => count($oplines['code'])
-            );
         }
-
-        return array($file => $result);
-    }
-
-    /**
-     * @param  array $operands
-     * @return string
-     */
-    protected function getOperands(array $operands)
-    {
-        $_operands = array();
-
-        foreach ($operands as $operand) {
-            $_operands[] = $operand['string'];
-        }
-
-        return join(', ', $_operands);
     }
 }
 ?>

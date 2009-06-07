@@ -154,9 +154,13 @@ class Bytekit_TextUI_Command
 
         if (count($files) == 1) {
             require 'Bytekit/Disassembler.php';
+            require 'Bytekit/TextUI/ResultPrinter/Disassembler/Text.php';
 
             $disassembler = new Bytekit_Disassembler;
-            $disassembler->disassemble($files[0]);
+            $result       = $disassembler->disassemble($files[0]);
+
+            $printer = new Bytekit_TextUI_ResultPrinter_Disassembler_Text;
+            $printer->printResult($result);
 
             exit(0);
         }
