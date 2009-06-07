@@ -141,18 +141,13 @@ class Bytekit_TextUI_Command
 
         if (!empty($mnemonics)) {
             require 'Bytekit/Scanner.php';
+            require 'Bytekit/TextUI/ResultPrinter/Scanner/Text.php';
 
             $scanner = new Bytekit_Scanner($mnemonics);
             $result  = $scanner->scan($files);
 
-            foreach ($result as $item) {
-                printf(
-                  "  - %s:%d (%s)\n",
-                  $item['file'],
-                  $item['line'],
-                  $item['mnemonic']
-                );
-            }
+            $printer = new Bytekit_TextUI_ResultPrinter_Scanner_Text;
+            $printer->printResult($result);
 
             exit(0);
         }

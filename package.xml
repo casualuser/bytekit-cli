@@ -32,6 +32,13 @@
   <dir name="/">
    <dir name="Bytekit">
     <dir name="TextUI">
+     <dir name="ResultPrinter">
+      <dir name="Scanner">
+       <file baseinstalldir="/" name="Text.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir>
+     </dir>
      <file baseinstalldir="/" name="Command.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
