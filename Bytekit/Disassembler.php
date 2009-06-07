@@ -59,10 +59,33 @@ class Bytekit_Disassembler
     public function disassemble($file)
     {
         $bytecode = @bytekit_disassemble_file($file);
+        $first    = TRUE;
 
         foreach ($bytecode['functions'] as $function => $oplines) {
-            print $function . ":\n\n" .
-                  "  line  #     opcode                           operands\n" .
+            printf(
+              "%sFilename:           %s\n" .
+              "Function:           %s\n" .
+              "Number of oplines:  %d\n",
+              $first ? '' : "\n",
+              $file,
+              $function,
+              count($oplines['code'])
+            );
+
+            if (isset($oplines['raw']['cv'])) {
+                foreach ($oplines['raw']['cv'] as $key => $name) {
+                    printf(
+                      '%s!%d = $%s',
+                      $key > 0 ? ', ' : 'Compiled variables: ',
+                      $key,
+                      $name
+                    );
+                }
+
+                print "\n\n";
+            }
+
+            print "  line  #     opcode                           operands\n" .
                   "  -----------------------------------------------------------------------------\n";
 
             $op           = 0;
@@ -85,6 +108,9 @@ class Bytekit_Disassembler
                   $this->getOperands($opline['operands'])
                 );
             }
+
+            $first = FALSE;
+            print "\n";
         }
     }
 
