@@ -42,7 +42,7 @@
  */
 
 /**
- * Scans for unwanted mnemonics.
+ * Printer for result sets from Bytekit_Scanner::scan().
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
