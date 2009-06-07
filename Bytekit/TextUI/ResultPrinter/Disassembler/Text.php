@@ -61,6 +61,8 @@ class Bytekit_TextUI_ResultPrinter_Disassembler_Text
     public function printResult(array $result)
     {
         foreach ($result as $file => $functions) {
+            uasort($functions, array($this, 'compare'));
+
             $first = TRUE;
 
             foreach ($functions as $name => $data) {
@@ -109,6 +111,25 @@ class Bytekit_TextUI_ResultPrinter_Disassembler_Text
                 print "\n";
             }
         }
+    }
+
+    /**
+     * Callback for uasort().
+     *
+     * @param  array $a
+     * @param  array $b
+     * @return integer
+     */
+    protected function compare($a, $b)
+    {
+        $a = array_keys($a['ops']);
+        $a = $a[0];
+
+        $b = array_keys($b['ops']);
+        $b = $b[0];
+
+        if ($a == $b) return 0;
+        return ($a < $b) ? -1 : 1;
     }
 }
 ?>
