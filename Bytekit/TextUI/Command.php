@@ -153,6 +153,8 @@ class Bytekit_TextUI_Command
                   $item['mnemonic']
                 );
             }
+
+            exit(0);
         }
     }
 
