@@ -44,6 +44,9 @@
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
     </dir>
+    <file baseinstalldir="/" name="Scanner.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info" />
+    </file>
    </dir>
    <file baseinstalldir="/" name="bytekit.php" role="script">
     <tasks:replace from="/usr/bin/env php" to="php_bin" type="pear-config"/>
