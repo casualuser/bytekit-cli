@@ -48,4 +48,5 @@ if (strpos('@php_bin@', '@php_bin') === 0) {
 
 require 'Bytekit/TextUI/Command.php';
 
-Bytekit_TextUI_Command::main();
+$command = new Bytekit_TextUI_Command;
+$command->main();

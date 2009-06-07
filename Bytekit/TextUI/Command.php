@@ -59,7 +59,7 @@ class Bytekit_TextUI_Command
     /**
      * Main method.
      */
-    public static function main()
+    public function main()
     {
         try {
             $options = Bytekit_TextUI_Getopt::getopt(
@@ -75,7 +75,7 @@ class Bytekit_TextUI_Command
         }
 
         catch (RuntimeException $e) {
-            self::showError($e->getMessage());
+            $this->showError($e->getMessage());
         }
 
         $mnemonics = array();
@@ -84,7 +84,7 @@ class Bytekit_TextUI_Command
         foreach ($options[0] as $option) {
             switch ($option[0]) {
                 case '--help': {
-                    self::showHelp();
+                    $this->showHelp();
                     exit(0);
                 }
                 break;
@@ -102,7 +102,7 @@ class Bytekit_TextUI_Command
                 break;
 
                 case '--version': {
-                    self::printVersionString();
+                    $this->printVersionString();
                     exit(0);
                 }
                 break;
@@ -133,11 +133,11 @@ class Bytekit_TextUI_Command
         }
 
         if (empty($files)) {
-            self::showHelp();
+            $this->showHelp();
             exit(1);
         }
 
-        self::printVersionString();
+        $this->printVersionString();
 
         if (!empty($mnemonics)) {
             require 'Bytekit/Scanner.php';
@@ -173,7 +173,7 @@ class Bytekit_TextUI_Command
      * @param  array  $suffixes
      * @return Traversable
      */
-    protected static function getFiles($path, array $suffixes)
+    protected function getFiles($path, array $suffixes)
     {
         if (is_dir($path)) {
             return new Bytekit_Util_FilterIterator(
@@ -194,9 +194,9 @@ class Bytekit_TextUI_Command
      *
      * @param string $message
      */
-    protected static function showError($message)
+    protected function showError($message)
     {
-        self::printVersionString();
+        $this->printVersionString();
 
         print $message;
 
@@ -206,9 +206,9 @@ class Bytekit_TextUI_Command
     /**
      * Shows the help.
      */
-    protected static function showHelp()
+    protected function showHelp()
     {
-        self::printVersionString();
+        $this->printVersionString();
 
         print <<<EOT
 Usage: bytekit [switches] <directory|file> ...
@@ -226,7 +226,7 @@ EOT;
     /**
      * Prints the version string.
      */
-    protected static function printVersionString()
+    protected function printVersionString()
     {
         print "bytekit-cli @package_version@ by Sebastian Bergmann.\n\n";
     }
