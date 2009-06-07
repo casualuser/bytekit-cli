@@ -8,8 +8,7 @@ command-line tool that leverages Bytekit to perform common code analysis tasks.
 Usage Examples
 --------------
 
-Scan for unwanted mnemonics in a source tree
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Scan for unwanted mnemonics in a source tree:
 
     sb@ubuntu ~ % bytekit --scan EVAL /usr/local/src/phpunit/trunk 
     bytekit-cli 1.0.0 by Sebastian Bergmann.
