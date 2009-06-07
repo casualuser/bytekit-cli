@@ -12,48 +12,25 @@ Usage Examples
 
 Disassemble a source file:
 
-    sb@ubuntu bytekit-cli % bytekit bytekit.php 
+    sb@ubuntu ~ % bytekit /tmp/test.php
     bytekit-cli 1.0.0 by Sebastian Bergmann.
 
-    main:
+    Filename:           /tmp/test.php
+    Function:           main
+    Number of oplines:  9
+    Compiled variables: !0 = $a, !1 = $b
 
       line  #     opcode                           operands
       -----------------------------------------------------------------------------
-      2     0     EXT_STMT                         
-            1     ECHO                             '#!/usr/bin/env php\n'
-      45    2     EXT_STMT                         
-            3     EXT_FCALL_BEGIN                  
-            4     SEND_VAL                         '@php_bin@', 1
-            5     SEND_VAL                         '@php_bin', 2
-            6     DO_FCALL                         $0, 'strpos'
-            7     EXT_FCALL_END                    
-            8     IS_IDENTICAL                     ~1, $0, 0
-            9     JMPZ                             ~1, loc_419
-      46    10    EXT_STMT                         
-            11    EXT_FCALL_BEGIN                  
-            12    EXT_FCALL_BEGIN                  
-            13    SEND_VAL                         '/usr/local/src/bytekit-cli/bytekit.php', 1
-            14    DO_FCALL                         $2, 'dirname'
-            15    EXT_FCALL_END                    
-            16    CONCAT                           ~3, $2, ':'
-            17    EXT_FCALL_BEGIN                  
-            18    DO_FCALL                         $4, 'get_include_path'
-            19    EXT_FCALL_END                    
-            20    CONCAT                           ~5, ~3, $4
-            21    SEND_VAL                         ~5, 1
-            22    DO_FCALL                         'set_include_path'
-            23    EXT_FCALL_END                    
-      47    24    JMP                              loc_419
-      49    25    EXT_STMT                         
-            26    EXT_FCALL_BEGIN                  
-            27    REQUIRE                          'Bytekit/TextUI/Command.php'
-            28    EXT_FCALL_END                    
-      51    29    EXT_STMT                         
-            30    INIT_STATIC_METHOD_CALL          'Bytekit_TextUI_Command', 'main'
-            31    EXT_FCALL_BEGIN                  
-            32    DO_FCALL_BY_NAME                 
-            33    EXT_FCALL_END                    
-      52    34    RETURN                           1
+      2     0     EXT_STMT
+            1     ASSIGN                           !0, 1
+      3     2     EXT_STMT
+            3     ASSIGN                           !1, 2
+      4     4     EXT_STMT
+            5     ADD                              ~2, !0, !1
+            6     PRINT                            ~3, ~2
+            7     FREE                             ~3
+      5     8     RETURN                           1
 
 Scan for unwanted mnemonics in a source tree:
 
