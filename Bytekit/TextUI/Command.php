@@ -41,7 +41,6 @@
  * @since     File available since Release 1.0.0
  */
 
-require 'Bytekit/Scanner.php';
 require 'Bytekit/TextUI/Getopt.php';
 require 'Bytekit/Util/FilterIterator.php';
 
@@ -141,6 +140,8 @@ class Bytekit_TextUI_Command
         self::printVersionString();
 
         if (!empty($mnemonics)) {
+            require 'Bytekit/Scanner.php';
+
             $scanner = new Bytekit_Scanner($mnemonics);
             $result  = $scanner->scan($files);
 
