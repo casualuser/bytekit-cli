@@ -53,29 +53,54 @@
  */
 class Bytekit_Disassembler
 {
+    /**
+     * @param string $file
+     */
     public function disassemble($file)
     {
         $bytecode = @bytekit_disassemble_file($file);
 
         foreach ($bytecode['functions'] as $function => $oplines) {
-            print $function . ":\n";
+            print $function . ":\n\n" .
+                  "  line  #     opcode                           operands\n" .
+                  "  -----------------------------------------------------------------------------\n";
+
+            $op           = 0;
+            $previousLine = '';
 
             foreach ($oplines['code'] as $opline) {
-                $operands = array();
+                $currentLine = $oplines['raw']['opcodes'][$opline['opline']]['lineno'];
 
-                foreach ($opline['operands'] as $operand) {
-                    $operands[] = $operand['string'];
+                if ($currentLine == $previousLine) {
+                    $currentLine = '';
+                } else {
+                    $previousLine = $currentLine;
                 }
 
                 printf(
-                  "    %s%s\n",
-                  str_pad($opline['mnemonic'], 32, ' ', STR_PAD_RIGHT),
-                  join(', ', $operands)
+                  "  %-5s %-5d %-32s %s\n",
+                  $currentLine,
+                  $op++,
+                  $opline['mnemonic'],
+                  $this->getOperands($opline['operands'])
                 );
             }
-
-            print "\n";
         }
+    }
+
+    /**
+     * @param  array $operands
+     * @return string
+     */
+    protected function getOperands(array $operands)
+    {
+        $_operands = array();
+
+        foreach ($operands as $operand) {
+            $_operands[] = $operand['string'];
+        }
+
+        return join(', ', $_operands);
     }
 }
 ?>
