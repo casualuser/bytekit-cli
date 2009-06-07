@@ -41,6 +41,7 @@
  * @since     File available since Release 1.0.0
  */
 
+require 'Bytekit/Scanner.php';
 require 'Bytekit/TextUI/Getopt.php';
 require 'Bytekit/Util/FilterIterator.php';
 
@@ -67,6 +68,7 @@ class Bytekit_TextUI_Command
               '',
               array(
                 'help',
+                'scan=',
                 'suffixes=',
                 'version'
               )
@@ -77,13 +79,20 @@ class Bytekit_TextUI_Command
             self::showError($e->getMessage());
         }
 
-        $suffixes = array('php');
+        $mnemonics = array();
+        $suffixes  = array('php');
 
         foreach ($options[0] as $option) {
             switch ($option[0]) {
                 case '--help': {
                     self::showHelp();
                     exit(0);
+                }
+                break;
+
+                case '--scan': {
+                    $mnemonics = explode(',', $option[1]);
+                    array_map('trim', $mnemonics);
                 }
                 break;
 
@@ -130,6 +139,20 @@ class Bytekit_TextUI_Command
         }
 
         self::printVersionString();
+
+        if (!empty($mnemonics)) {
+            $scanner = new Bytekit_Scanner($mnemonics);
+            $result  = $scanner->scan($files);
+
+            foreach ($result as $item) {
+                printf(
+                  "  - %s:%d (%s)\n",
+                  $item['file'],
+                  $item['line'],
+                  $item['mnemonic']
+                );
+            }
+        }
     }
 
     /**
@@ -178,6 +201,8 @@ class Bytekit_TextUI_Command
 
         print <<<EOT
 Usage: bytekit [switches] <directory|file> ...
+
+  --scan <MNEMONIC,...>    Scans for unwanted mnemonics.
 
   --suffixes <suffix,...>  A comma-separated list of file suffixes to check.
 
