@@ -141,26 +141,26 @@ class Bytekit_TextUI_Command
 
         if (!empty($mnemonics)) {
             require_once 'Bytekit/Scanner.php';
-            require_once 'Bytekit/TextUI/ResultPrinter/Scanner/Text.php';
+            require_once 'Bytekit/TextUI/ResultFormatter/Scanner/Text.php';
 
             $scanner = new Bytekit_Scanner($mnemonics);
             $result  = $scanner->scan($files);
 
-            $printer = new Bytekit_TextUI_ResultPrinter_Scanner_Text;
-            $printer->printResult($result);
+            $formatter = new Bytekit_TextUI_ResultFormatter_Scanner_Text;
+            print $formatter->formatResult($result);
 
             exit(0);
         }
 
         if (count($files) == 1) {
             require_once 'Bytekit/Disassembler.php';
-            require_once 'Bytekit/TextUI/ResultPrinter/Disassembler/Text.php';
+            require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/Text.php';
 
             $disassembler = new Bytekit_Disassembler;
             $result       = $disassembler->disassemble($files[0]);
 
-            $printer = new Bytekit_TextUI_ResultPrinter_Disassembler_Text;
-            $printer->printResult($result);
+            $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_Text;
+            print $formatter->formatResult($result);
 
             exit(0);
         }

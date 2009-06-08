@@ -42,7 +42,7 @@
  */
 
 /**
- * Printer for result sets from Bytekit_Scanner::scan().
+ * Formatter for result sets from Bytekit_Scanner::scan().
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
@@ -51,23 +51,28 @@
  * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
  * @since     Class available since Release 1.0.0
  */
-class Bytekit_TextUI_ResultPrinter_Scanner_Text
+class Bytekit_TextUI_ResultFormatter_Scanner_Text
 {
     /**
-     * Prints a result set from Bytekit_Scanner::scan().
+     * Formats a result set from Bytekit_Scanner::scan().
      *
-     * @param array $result
+     * @param  array $result
+     * @return string
      */
-    public function printResult(array $result)
+    public function formatResult(array $result)
     {
+        $buffer = '';
+
         foreach ($result as $item) {
-            printf(
+            $buffer .= sprintf(
               "  - %s:%d (%s)\n",
               $item['file'],
               $item['line'],
               $item['mnemonic']
             );
         }
+
+        return $buffer;
     }
 }
 ?>

@@ -42,7 +42,7 @@
  */
 
 /**
- * Printer for result sets from Bytekit_Disassembler::disassemble().
+ * Formatter for result sets from Bytekit_Disassembler::disassemble().
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
@@ -51,22 +51,25 @@
  * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
  * @since     Class available since Release 1.0.0
  */
-class Bytekit_TextUI_ResultPrinter_Disassembler_Text
+class Bytekit_TextUI_ResultFormatter_Disassembler_Text
 {
     /**
-     * Prints a result set from Bytekit_Disassembler::disassemble().
+     * Formats a result set from Bytekit_Disassembler::disassemble().
      *
-     * @param array $result
+     * @param  array $result
+     * @return string
      */
-    public function printResult(array $result)
+    public function formatResult(array $result)
     {
+        $buffer = '';
+
         foreach ($result as $file => $functions) {
             uasort($functions, array($this, 'compare'));
 
             $first = TRUE;
 
             foreach ($functions as $name => $data) {
-                printf(
+                $buffer .= sprintf(
                   "%sFilename:           %s\n" .
                   "Function:           %s\n" .
                   "Number of oplines:  %d\n",
@@ -77,16 +80,15 @@ class Bytekit_TextUI_ResultPrinter_Disassembler_Text
                 );
 
                 if (!empty($data['cv'])) {
-                    printf(
+                    $buffer .= sprintf(
                       "Compiled variables: %s\n",
                       join(', ', $data['cv'])
                     );
                 }
 
-                print "\n  line  #     label      opcode                           operands\n" .
-                      "  -----------------------------------------------------------------------------\n";
-
-                $op = 0;
+                $buffer .= "\n  line  #     label      opcode                           operands\n" .
+                           "  -----------------------------------------------------------------------------\n";
+                $op      = 0;
 
                 foreach ($data['ops'] as $line => $ops) {
                     $first = TRUE;
@@ -98,7 +100,7 @@ class Bytekit_TextUI_ResultPrinter_Disassembler_Text
                             $line = '';
                         }
 
-                        printf(
+                        $buffer .= sprintf(
                           "  %-5s %-5d %-10s %-32s %s\n",
                           $line,
                           $op++,
@@ -109,9 +111,11 @@ class Bytekit_TextUI_ResultPrinter_Disassembler_Text
                     }
                 }
 
-                print "\n";
+                $buffer .=  "\n";
             }
         }
+
+        return $buffer;
     }
 
     /**

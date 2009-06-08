@@ -32,7 +32,7 @@
   <dir name="/">
    <dir name="Bytekit">
     <dir name="TextUI">
-     <dir name="ResultPrinter">
+     <dir name="ResultFormatter">
       <dir name="Disassembler">
        <file baseinstalldir="/" name="Text.php" role="php">
         <tasks:replace from="@package_version@" to="version" type="package-info" />
