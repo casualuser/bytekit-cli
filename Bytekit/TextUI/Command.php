@@ -69,6 +69,7 @@ class Bytekit_TextUI_Command
                 'help',
                 'scan=',
                 'suffixes=',
+                'xml=',
                 'version'
               )
             );
@@ -104,6 +105,11 @@ class Bytekit_TextUI_Command
                 case '--version': {
                     $this->printVersionString();
                     exit(0);
+                }
+                break;
+
+                case '--xml': {
+                    $xml = $option[1];
                 }
                 break;
             }
@@ -148,6 +154,13 @@ class Bytekit_TextUI_Command
 
             $formatter = new Bytekit_TextUI_ResultFormatter_Scanner_Text;
             print $formatter->formatResult($result);
+
+            if (isset($xml)) {
+                require_once 'Bytekit/TextUI/ResultFormatter/Scanner/XML.php';
+
+                $formatter = new Bytekit_TextUI_ResultFormatter_Scanner_XML;
+                file_put_contents($xml, $formatter->formatResult($result));
+            }
 
             exit(0);
         }
@@ -216,6 +229,8 @@ Usage: bytekit [switches] <directory|file> ...
   --scan <MNEMONIC,...>    Scans for unwanted mnemonics.
 
   --suffixes <suffix,...>  A comma-separated list of file suffixes to check.
+
+  --xml <file>             Write violations report in PMD XML format.
 
   --help                   Prints this usage information.
   --version                Prints the version and exits.
