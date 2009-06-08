@@ -46,7 +46,7 @@ if (strpos('@php_bin@', '@php_bin') === 0) {
     set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path());
 }
 
-require 'Bytekit/TextUI/Command.php';
+require_once 'Bytekit/TextUI/Command.php';
 
 $command = new Bytekit_TextUI_Command;
 $command->main();

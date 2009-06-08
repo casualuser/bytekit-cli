@@ -41,8 +41,8 @@
  * @since     File available since Release 1.0.0
  */
 
-require 'Bytekit/TextUI/Getopt.php';
-require 'Bytekit/Util/FilterIterator.php';
+require_once 'Bytekit/TextUI/Getopt.php';
+require_once 'Bytekit/Util/FilterIterator.php';
 
 /**
  * TextUI frontend for Bytekit.
@@ -140,8 +140,8 @@ class Bytekit_TextUI_Command
         $this->printVersionString();
 
         if (!empty($mnemonics)) {
-            require 'Bytekit/Scanner.php';
-            require 'Bytekit/TextUI/ResultPrinter/Scanner/Text.php';
+            require_once 'Bytekit/Scanner.php';
+            require_once 'Bytekit/TextUI/ResultPrinter/Scanner/Text.php';
 
             $scanner = new Bytekit_Scanner($mnemonics);
             $result  = $scanner->scan($files);
@@ -153,8 +153,8 @@ class Bytekit_TextUI_Command
         }
 
         if (count($files) == 1) {
-            require 'Bytekit/Disassembler.php';
-            require 'Bytekit/TextUI/ResultPrinter/Disassembler/Text.php';
+            require_once 'Bytekit/Disassembler.php';
+            require_once 'Bytekit/TextUI/ResultPrinter/Disassembler/Text.php';
 
             $disassembler = new Bytekit_Disassembler;
             $result       = $disassembler->disassemble($files[0]);
