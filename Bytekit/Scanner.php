@@ -84,8 +84,11 @@ class Bytekit_Scanner
             foreach ($bytecode['functions'] as $function) {
                 foreach ($function['code'] as $opline) {
                     if (in_array($opline['mnemonic'], $this->mnemonics)) {
-                        $result[] = array(
-                          'file'     => $file,
+                        if (!isset($result[$file])) {
+                            $result[$file] = array();
+                        }
+
+                        $result[$file][] = array(
                           'line'     => $function['raw']['opcodes'][$opline['opline']]['lineno'],
                           'mnemonic' => $opline['mnemonic']
                         );

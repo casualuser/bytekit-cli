@@ -63,13 +63,15 @@ class Bytekit_TextUI_ResultFormatter_Scanner_Text
     {
         $buffer = '';
 
-        foreach ($result as $item) {
-            $buffer .= sprintf(
-              "  - %s:%d (%s)\n",
-              $item['file'],
-              $item['line'],
-              $item['mnemonic']
-            );
+        foreach ($result as $file => $items) {
+            foreach ($items as $item) {
+                $buffer .= sprintf(
+                  "  - %s:%d (%s)\n",
+                  $file,
+                  $item['line'],
+                  $item['mnemonic']
+                );
+            }
         }
 
         return $buffer;
