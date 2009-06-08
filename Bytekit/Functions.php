@@ -42,6 +42,47 @@
  */
 
 /**
+ * Eliminates dead code in an oparray.
+ *
+ * @param  array $oparray
+ * @return array
+ * @author Stefan Esser <stefan.esser@sektioneins.de>
+ */
+function bytekit_eliminate_dead_code(array &$oparray)
+{
+    $count         = count($oparray['cfg']);
+    $deadCode      = array();
+    $foundDeadCode = FALSE;
+
+    do {
+        $in = array();
+
+        for ($i = 1; $i <= $count; $i++) {
+            $in[$i] = 0;
+        }
+
+        for ($i = 1; $i <= $count; $i++) {
+            foreach ($oparray['cfg'][$i] as $child => $value) {
+                $in[$child]++;
+            }
+        }
+
+        $foundDeadCode = FALSE;
+
+        for ($i = 2; $i <= $count; $i++) {
+            if ($in[$i] == 0 && !in_array($i, $deadCode)) {
+                $oparray['cfg'][$i] = array();
+                $foundDeadCode      = TRUE;
+                $deadCode[]         = $i;
+            }
+        }
+    }
+    while ($foundDeadCode);
+
+    return $deadCode;
+}
+
+/**
  * Finds jump labels in an oparray.
  *
  * @param  array $oparray
