@@ -86,7 +86,7 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_Text
                     );
                 }
 
-                $buffer .= "\n  line  #     label      opcode                           operands\n" .
+                $buffer .= "\n  line  #     label      opcode                           result  operands\n" .
                            "  -----------------------------------------------------------------------------\n";
                 $op      = 0;
 
@@ -101,11 +101,12 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_Text
                         }
 
                         $buffer .= sprintf(
-                          "  %-5s %-5d %-10s %-32s %s\n",
+                          "  %-5s %-5d %-10s %-32s %-7s %s\n",
                           $line,
                           $op++,
                           $_op['label'],
                           $_op['mnemonic'],
+                          $_op['results'],
                           $_op['operands']
                         );
                     }

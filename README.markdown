@@ -12,29 +12,29 @@ Usage Examples
 
 Disassemble a source file:
 
-    sb@ubuntu ~ % bytekit /tmp/test.php
-    bytekit-cli 1.0.0 by Sebastian Bergmann.
+    sb@ubuntu bytekit-cli % bytekit /tmp/test.php
+    bytekit-cli @package_version@ by Sebastian Bergmann.
 
     Filename:           /tmp/test.php
     Function:           main
     Number of oplines:  13
     Compiled variables: !0 = $a, !1 = $b, !2 = $c
 
-      line  #     label      opcode                           operands
+      line  #     label      opcode                           result  operands
       -----------------------------------------------------------------------------
       2     0                EXT_STMT
-            1                ASSIGN                           !0, 1
+            1                ASSIGN                                   !0, 1
       3     2                EXT_STMT
-            3                ASSIGN                           !1, 2
+            3                ASSIGN                                   !1, 2
       4     4                EXT_STMT
-            5                ADD                              ~2, !0, !1
-            6                PRINT                            ~3, ~2
-            7                FREE                             ~3
+            5                ADD                              ~2      !0, !1
+            6                PRINT                            ~3      ~2
+            7                FREE                                     ~3
       5     8                EXT_STMT
-            9                JMPZ                             !0, loc_40c
-            10               ASSIGN                           !2, 3
-            11               JMP                              loc_40c
-      6     12    loc_40c    RETURN                           1
+            9                JMPZ                                     !0, loc_40c
+            10               ASSIGN                                   !2, 3
+            11               JMP                                      loc_40c
+      6     12    loc_40c    RETURN                                   1
 
 Scan for unwanted mnemonics in a source tree:
 

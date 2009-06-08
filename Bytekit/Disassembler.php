@@ -82,9 +82,12 @@ class Bytekit_Disassembler
                     $ops[$oparray['raw']['opcodes'][$opline['opline']]['lineno']] = array();
                 }
 
+                $operands = $this->decodeOperands($opline['operands']);
+
                 $ops[$oparray['raw']['opcodes'][$opline['opline']]['lineno']][] = array(
                   'mnemonic' => $opline['mnemonic'],
-                  'operands' => $this->getOperands($opline['operands']),
+                  'operands' => join(', ', $operands['operands']),
+                  'results'  => join(', ', $operands['results']),
                   'label'    => isset($labels[$opline['address']]) ? $labels[$opline['address']] : ''
                 );
             }
@@ -98,18 +101,34 @@ class Bytekit_Disassembler
     }
 
     /**
+     * Decodes the results and operands of an opline.
+     *
      * @param  array $operands
      * @return string
      */
-    protected function getOperands(array $operands)
+    protected function decodeOperands(array $operands)
     {
-        $_operands = array();
+        $result = array(
+          'operands' => array(), 'results' => array()
+        );
 
         foreach ($operands as $operand) {
-            $_operands[] = $operand['string'];
+            $flags = $operand['flags'] & BYTEKIT_SRC_MASK;
+
+            if ($flags == BYTEKIT_SRC_RES1) {
+                $result['results'][0] = $operand['string'];
+            }
+
+            else if ($flags == BYTEKIT_SRC_RES2) {
+                $result['results'][1] = $operand['string'];
+            }
+
+            else {
+                $result['operands'][] = $operand['string'];
+            }
         }
 
-        return join(', ', $_operands);
+        return $result;
     }
 }
 ?>
