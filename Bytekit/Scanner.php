@@ -89,6 +89,7 @@ class Bytekit_Scanner
                         }
 
                         $result[$file][] = array(
+                          'function' => $function,
                           'line'     => $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
                           'mnemonic' => $opline['mnemonic']
                         );
