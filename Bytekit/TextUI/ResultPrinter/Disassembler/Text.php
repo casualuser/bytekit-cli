@@ -83,7 +83,7 @@ class Bytekit_TextUI_ResultPrinter_Disassembler_Text
                     );
                 }
 
-                print "\n  line  #     opcode                           operands\n" .
+                print "\n  line  #     label      opcode                           operands\n" .
                       "  -----------------------------------------------------------------------------\n";
 
                 $op = 0;
@@ -99,9 +99,10 @@ class Bytekit_TextUI_ResultPrinter_Disassembler_Text
                         }
 
                         printf(
-                          "  %-5s %-5d %-32s %s\n",
+                          "  %-5s %-5d %-10s %-32s %s\n",
                           $line,
                           $op++,
+                          $_op['label'],
                           $_op['mnemonic'],
                           $_op['operands']
                         );

@@ -41,6 +41,8 @@
  * @since     File available since Release 1.0.0
  */
 
+require_once 'Bytekit/Functions.php';
+
 /**
  * Disassembler.
  *
@@ -65,8 +67,9 @@ class Bytekit_Disassembler
         $result   = array();
 
         foreach ($bytecode['functions'] as $function => $oparray) {
-            $cv  = array();
-            $ops = array();
+            $cv     = array();
+            $ops    = array();
+            $labels = bytekit_find_jump_labels($oparray);
 
             if (isset($oparray['raw']['cv'])) {
                 foreach ($oparray['raw']['cv'] as $key => $name) {
@@ -81,7 +84,8 @@ class Bytekit_Disassembler
 
                 $ops[$oparray['raw']['opcodes'][$opline['opline']]['lineno']][] = array(
                   'mnemonic' => $opline['mnemonic'],
-                  'operands' => $this->getOperands($opline['operands'])
+                  'operands' => $this->getOperands($opline['operands']),
+                  'label'    => isset($labels[$opline['address']]) ? $labels[$opline['address']] : ''
                 );
             }
 
