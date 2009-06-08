@@ -91,13 +91,21 @@ function bytekit_eliminate_dead_code(array &$oparray)
  */
 function bytekit_find_jump_labels(array $oparray)
 {
-    $labels = array();
+    $_labels = array();
 
     foreach ($oparray['code'] as $opline) {
         foreach ($opline['operands'] as $operand) {
             if ($operand['type'] == BYTEKIT_TYPE_SYMBOL) {
-                $labels[$operand['value']] = $operand['string'];
+                $_labels[$operand['value']] = $operand['string'];
             }
+        }
+    }
+
+    $labels = array();
+
+    foreach ($oparray['code'] as $op => $opline) {
+        if (isset($_labels[$opline['address']])) {
+            $labels[$_labels[$opline['address']]] = $op;
         }
     }
 

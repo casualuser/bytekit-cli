@@ -20,21 +20,21 @@ Disassemble a source file:
     Number of oplines:  13
     Compiled variables: !0 = $a, !1 = $b, !2 = $c
 
-      line  #     label      opcode                           result  operands
+      line  #     opcode                           result  operands
       -----------------------------------------------------------------------------
-      2     0                EXT_STMT
-            1                ASSIGN                                   !0, 1
-      3     2                EXT_STMT
-            3                ASSIGN                                   !1, 2
-      4     4                EXT_STMT
-            5                ADD                              ~2      !0, !1
-            6                PRINT                            ~3      ~2
-            7                FREE                                     ~3
-      5     8                EXT_STMT
-            9                JMPZ                                     !0, loc_40c
-            10               ASSIGN                                   !2, 3
-            11               JMP                                      loc_40c
-      6     12    loc_40c    RETURN                                   1
+      2     0     EXT_STMT
+            1     ASSIGN                                   !0, 1
+      3     2     EXT_STMT
+            3     ASSIGN                                   !1, 2
+      4     4     EXT_STMT
+            5     ADD                              ~2      !0, !1
+            6     PRINT                            ~3      ~2
+            7     FREE                                     ~3
+      5     8     EXT_STMT
+            9     JMPZ                                     !0, ->12
+            10    ASSIGN                                   !2, 3
+            11    JMP                                      ->12
+      6     12    RETURN                                   1
 
 Scan for unwanted mnemonics in a source tree:
 
