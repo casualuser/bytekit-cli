@@ -46,6 +46,7 @@
  *
  * @param  array $oparray
  * @return array(address => label)
+ * @author Stefan Esser <stefan.esser@sektioneins.de>
  */
 function bytekit_find_jump_labels(array $oparray)
 {
