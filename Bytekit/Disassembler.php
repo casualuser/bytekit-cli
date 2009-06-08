@@ -64,29 +64,29 @@ class Bytekit_Disassembler
         $bytecode = @bytekit_disassemble_file($file);
         $result   = array();
 
-        foreach ($bytecode['functions'] as $function => $oplines) {
+        foreach ($bytecode['functions'] as $function => $oparray) {
             $cv  = array();
             $ops = array();
 
-            if (isset($oplines['raw']['cv'])) {
-                foreach ($oplines['raw']['cv'] as $key => $name) {
+            if (isset($oparray['raw']['cv'])) {
+                foreach ($oparray['raw']['cv'] as $key => $name) {
                     $cv[] = sprintf('!%d = $%s', $key, $name);
                 }
             }
 
-            foreach ($oplines['code'] as $opline) {
-                if (!isset($ops[$oplines['raw']['opcodes'][$opline['opline']]['lineno']])) {
-                    $ops[$oplines['raw']['opcodes'][$opline['opline']]['lineno']] = array();
+            foreach ($oparray['code'] as $opline) {
+                if (!isset($ops[$oparray['raw']['opcodes'][$opline['opline']]['lineno']])) {
+                    $ops[$oparray['raw']['opcodes'][$opline['opline']]['lineno']] = array();
                 }
 
-                $ops[$oplines['raw']['opcodes'][$opline['opline']]['lineno']][] = array(
+                $ops[$oparray['raw']['opcodes'][$opline['opline']]['lineno']][] = array(
                   'mnemonic' => $opline['mnemonic'],
                   'operands' => $this->getOperands($opline['operands'])
                 );
             }
 
             $result[$function] = array(
-              'cv' => $cv, 'ops' => $ops, 'num_ops' => count($oplines['code'])
+              'cv' => $cv, 'ops' => $ops, 'num_ops' => count($oparray['code'])
             );
         }
 
