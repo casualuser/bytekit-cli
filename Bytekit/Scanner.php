@@ -81,15 +81,15 @@ class Bytekit_Scanner
         foreach ($files as $file) {
             $bytecode = @bytekit_disassemble_file($file);
 
-            foreach ($bytecode['functions'] as $function) {
-                foreach ($function['code'] as $opline) {
+            foreach ($bytecode['functions'] as $function => $oparray) {
+                foreach ($oparray['code'] as $opline) {
                     if (in_array($opline['mnemonic'], $this->mnemonics)) {
                         if (!isset($result[$file])) {
                             $result[$file] = array();
                         }
 
                         $result[$file][] = array(
-                          'line'     => $function['raw']['opcodes'][$opline['opline']]['lineno'],
+                          'line'     => $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
                           'mnemonic' => $opline['mnemonic']
                         );
                     }
