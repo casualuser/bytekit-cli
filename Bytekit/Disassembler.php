@@ -106,6 +106,7 @@ class Bytekit_Disassembler
                 }
 
                 $ops[$lineNumber][] = array(
+                  'bb'       => isset($oparray['bb'][$opline['opline']]) ? $oparray['bb'][$opline['opline']] : NULL,
                   'mnemonic' => $opline['mnemonic'],
                   'operands' => join(', ', $operands['operands']),
                   'results'  => join(', ', $operands['results'])
