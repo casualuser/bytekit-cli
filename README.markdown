@@ -32,8 +32,10 @@ Disassemble a source file:
             7     FREE                                     ~3
       5     8     EXT_STMT
             9     JMPZ                                     !0, ->12
+
             10    ASSIGN                                   !2, 3
             11    JMP                                      ->12
+
       6     12    RETURN                                   1
 
 Scan for unwanted mnemonics in a source tree and write a report in PMD-XML
