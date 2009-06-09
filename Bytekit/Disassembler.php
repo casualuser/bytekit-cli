@@ -78,13 +78,14 @@ class Bytekit_Disassembler
             }
 
             foreach ($oparray['code'] as $opline) {
-                if (!isset($ops[$oparray['raw']['opcodes'][$opline['opline']]['lineno']])) {
-                    $ops[$oparray['raw']['opcodes'][$opline['opline']]['lineno']] = array();
+                $lineNumber = $oparray['raw']['opcodes'][$opline['opline']]['lineno'];
+                $operands   = bytekit_decode_operands($opline['operands'], $labels);
+
+                if (!isset($ops[$lineNumber])) {
+                    $ops[$lineNumber] = array();
                 }
 
-                $operands = bytekit_decode_operands($opline['operands'], $labels);
-
-                $ops[$oparray['raw']['opcodes'][$opline['opline']]['lineno']][] = array(
+                $ops[$lineNumber][] = array(
                   'mnemonic' => $opline['mnemonic'],
                   'operands' => join(', ', $operands['operands']),
                   'results'  => join(', ', $operands['results'])
