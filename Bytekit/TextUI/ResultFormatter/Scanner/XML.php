@@ -42,7 +42,7 @@
  */
 
 /**
- * XML Checkstyle formatter for result sets from Bytekit_Scanner::scan().
+ * PMD XML formatter for result sets from Bytekit_Scanner::scan().
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
@@ -54,7 +54,7 @@
 class Bytekit_TextUI_ResultFormatter_Scanner_XML
 {
     /**
-     * Formats a result set from Bytekit_Scanner::scan() as Checkstyle XML.
+     * Formats a result set from Bytekit_Scanner::scan() as PMD XML.
      *
      * @param  array $result
      * @return string
