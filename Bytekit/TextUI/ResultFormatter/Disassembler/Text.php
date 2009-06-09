@@ -88,12 +88,18 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_Text
 
                 $buffer .= "\n  line  #     opcode                           result  operands\n" .
                            "  -----------------------------------------------------------------------------\n";
+                $bb      = 1;
                 $op      = 0;
 
                 foreach ($data['ops'] as $line => $ops) {
                     $first = TRUE;
 
                     foreach ($ops as $_op) {
+                        if ($_op['bb'] !== NULL && $_op['bb'] != $bb) {
+                            $bb = $_op['bb'];
+                            $buffer .= "\n";
+                        }
+
                         if ($first) {
                             $first = FALSE;
                         } else {
