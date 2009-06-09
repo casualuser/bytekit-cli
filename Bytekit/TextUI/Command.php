@@ -169,8 +169,8 @@ class Bytekit_TextUI_Command
             require_once 'Bytekit/Disassembler.php';
             require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/Text.php';
 
-            $disassembler = new Bytekit_Disassembler;
-            $result       = $disassembler->disassemble($files[0]);
+            $disassembler = new Bytekit_Disassembler($files[0]);
+            $result       = $disassembler->disassemble();
 
             $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_Text;
             print $formatter->formatResult($result);

@@ -56,17 +56,37 @@ require_once 'Bytekit/Functions.php';
 class Bytekit_Disassembler
 {
     /**
-     * Wrapper for bytekit_disassemble_file().
+     * @var array
+     */
+    protected $bytecode;
+
+    /**
+     * @var string
+     */
+    protected $filename;
+
+    /**
+     * Constructor.
      *
      * @param  string $file
      * @return array
      */
-    public function disassemble($file)
+    public function __construct($filename)
     {
-        $bytecode = @bytekit_disassemble_file($file);
-        $result   = array();
+        $this->bytecode = @bytekit_disassemble_file($filename);
+        $this->filename = $filename;
+    }
 
-        foreach ($bytecode['functions'] as $function => $oparray) {
+    /**
+     * Wrapper for bytekit_disassemble_file().
+     *
+     * @return array
+     */
+    public function disassemble()
+    {
+        $result = array();
+
+        foreach ($this->bytecode['functions'] as $function => $oparray) {
             $cv     = array();
             $ops    = array();
             $labels = bytekit_find_jump_labels($oparray);
@@ -97,7 +117,7 @@ class Bytekit_Disassembler
             );
         }
 
-        return array($file => $result);
+        return array($this->filename => $result);
     }
 }
 ?>
