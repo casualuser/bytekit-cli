@@ -92,9 +92,6 @@
    <extension>
     <name>bytekit</name>
    </extension>
-   <extension>
-    <name>tokenizer</name>
-   </extension>
   </required>
  </dependencies>
  <phprelease>
