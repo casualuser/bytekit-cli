@@ -66,6 +66,7 @@ class Bytekit_TextUI_Command
               $_SERVER['argv'],
               '',
               array(
+                'dot=',
                 'help',
                 'scan=',
                 'suffixes=',
@@ -84,6 +85,11 @@ class Bytekit_TextUI_Command
 
         foreach ($options[0] as $option) {
             switch ($option[0]) {
+                case '--dot': {
+                    $dot = $option[1];
+                }
+                break;
+
                 case '--help': {
                     $this->showHelp();
                     exit(0);
@@ -167,13 +173,24 @@ class Bytekit_TextUI_Command
 
         if (count($files) == 1) {
             require_once 'Bytekit/Disassembler.php';
-            require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/Text.php';
 
             $disassembler = new Bytekit_Disassembler($files[0]);
-            $result       = $disassembler->disassemble();
 
-            $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_Text;
-            print $formatter->formatResult($result);
+            if (isset($dot)) {
+                require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/DOT.php';
+
+                $result = $disassembler->disassemble();
+
+                $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_DOT;
+                $formatter->formatResult($result, $dot);
+            } else {
+                require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/Text.php';
+
+                $result = $disassembler->disassemble();
+
+                $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_Text;
+                print $formatter->formatResult($result);
+            }
 
             exit(0);
         }
@@ -230,6 +247,7 @@ Usage: bytekit [switches] <directory|file> ...
 
   --suffixes <suffix,...>  A comma-separated list of file suffixes to check.
 
+  --dot <director>         Write code flow graph(s) in DOT format to directory.
   --xml <file>             Write violations report in PMD XML format.
 
   --help                   Prints this usage information.
