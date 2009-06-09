@@ -36,13 +36,32 @@ Disassemble a source file:
             11    JMP                                      ->12
       6     12    RETURN                                   1
 
-Scan for unwanted mnemonics in a source tree:
+Scan for unwanted mnemonics in a source tree and write a report in PMD-XML
+format:
 
-    sb@ubuntu ~ % bytekit --scan EVAL /usr/local/src/phpunit/trunk 
+    sb@ubuntu ~ % bytekit --scan EVAL \
+                          --xml pmd-bytekit.xml
+                          /usr/local/src/phpunit/trunk
     bytekit-cli 1.0.0 by Sebastian Bergmann.
 
       - /usr/local/src/phpunit/trunk/PHPUnit/Extensions/PhptTestCase.php:223 (EVAL)
       - /usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php:177 (EVAL)
       - /usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php:1158 (EVAL)
       - /usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php:1059 (EVAL)
+
+The report looks like this:
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <pmd version="bytekit-cli 1.0.0">
+      <file name="/usr/local/src/phpunit/trunk/PHPUnit/Extensions/PhptTestCase.php">
+        <violation rule="EVAL" line="223" class="PHPUnit_Extensions_PhptTestCase" method="run"/>
+      </file>
+      <file name="/usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php">
+        <violation rule="EVAL" line="177" class="PHPUnit_TextUI_Command" method="run"/>
+      </file>
+      <file name="/usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php">
+        <violation rule="EVAL" line="1158" class="PHPUnit_Framework_TestCase" method="getMockFromWsdl"/>
+        <violation rule="EVAL" line="1059" class="PHPUnit_Framework_TestCase" method="getMock"/>
+      </file>
+    </pmd>
 
