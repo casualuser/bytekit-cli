@@ -70,6 +70,8 @@ function bytekit_decode_operands(array $operands, array $labels = array())
             if ($operand['type'] == BYTEKIT_TYPE_SYMBOL) {
                 if (isset($labels[$operand['string']])) {
                     $result['operands'][] = '->' . $labels[$operand['string']];
+                } else {
+                    $result['operands'][] = $operand['string'];
                 }
             } else {
                 $result['operands'][] = $operand['string'];
