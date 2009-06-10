@@ -198,13 +198,15 @@ EOT;
                     }
                 }
 
+                $filename = sprintf(
+                  '%s%s%s.dot',
+                  $directory,
+                  DIRECTORY_SEPARATOR,
+                  preg_replace('#[^\w.]#', '_', $function)
+                );
+
                 file_put_contents(
-                  sprintf(
-                    '%s%s%s.dot',
-                    $directory,
-                    DIRECTORY_SEPARATOR,
-                    preg_replace('#[^\w.]#', '_', $function)
-                  ),
+                  $filename,
                   sprintf(
                     self::GRAPH,
                     $function,
@@ -212,6 +214,8 @@ EOT;
                     $edges
                   )
                 );
+
+                printf('Wrote "%s".' . "\n", $filename);
             }
         }
     }
