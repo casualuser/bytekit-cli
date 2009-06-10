@@ -74,7 +74,7 @@ class Bytekit_Disassembler
     public function __construct($filename)
     {
         $this->bytecode = @bytekit_disassemble_file($filename);
-        $this->filename = $filename;
+        $this->filename = realpath($filename);
     }
 
     /**
