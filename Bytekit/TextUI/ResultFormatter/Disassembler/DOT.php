@@ -81,15 +81,15 @@ EOT;
 
     const NODE = <<<EOT
 "bb_%d" [
-  label =<<TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#ffffff">
-<TR><TD BGCOLOR="#FF8888" colspan="4" ALIGN="LEFT"><FONT face="Courier-Bold" point-size="12">%s:</FONT></TD></TR>
+  label =<<table border="2" cellborder="0" cellspacing="0" bgcolor="#ffffff">
+<tr><td bgcolor="#FF8888" colspan="4" align="left"><font face="Courier-Bold" point-size="12">%s:</font></td></tr>
 %s
-</TABLE>>
+</table>>
 ];
 EOT;
 
     const INSTRUCTION = <<<EOT
-<TR><TD ALIGN="LEFT">%s</TD><TD ALIGN="LEFT">%s</TD><TD ALIGN="LEFT">%s</TD><TD ALIGN="LEFT">%s</TD></TR>
+<tr><td align="left">%s</td><td align="left">%s</td><td align="left">%s</td><td align="left">%s</td></tr>
 
 EOT;
 
