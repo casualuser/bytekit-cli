@@ -179,7 +179,7 @@ class Bytekit_TextUI_Command
             if (isset($dot)) {
                 require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/DOT.php';
 
-                $result = $disassembler->disassemble();
+                $result = $disassembler->disassemble(FALSE);
 
                 $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_DOT;
                 $formatter->formatResult($result, $dot);
