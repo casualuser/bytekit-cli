@@ -63,7 +63,7 @@ node [
 
 graph [
     rankdir="HR"
-    bgcolor="#f7f7f7"
+    bgcolor="#eeeeec"
     label="Control Flow Graph for %s()"
     labeljust="c"
     labelloc="t"
@@ -81,8 +81,8 @@ EOT;
 
     const NODE = <<<EOT
 "bb_%d" [
-  label =<<table border="2" cellborder="0" cellspacing="0" bgcolor="#ffffff">
-<tr><td bgcolor="#FF8888" colspan="4" align="left"><font face="Courier-Bold" point-size="12">%s:</font></td></tr>
+  label =<<table border="2" cellborder="0" cellspacing="0" bgcolor="#d3d7cf">
+<tr><td bgcolor="#fcaf3e" colspan="4" align="left"><font face="Courier-Bold" point-size="12">%s:</font></td></tr>
 %s
 </table>>
 ];
@@ -163,27 +163,27 @@ EOT;
                         foreach ($cfg as $key => $value) {
                             switch ($value) {
                                 case BYTEKIT_EDGE_TRUE: {
-                                    $style = 'color="#00ff00"';
+                                    $style = 'color="#4e9a06"';
                                 }
                                 break;
 
                                 case BYTEKIT_EDGE_FALSE: {
-                                    $style = 'color="#ff0000"';
+                                    $style = 'color="#a40000"';
                                 }
                                 break;
 
                                 case BYTEKIT_EDGE_NORMAL: {
-                                    $style = 'color="#000000"';
+                                    $style = 'color="#2e3436"';
                                 }
                                 break;
 
                                 case BYTEKIT_EDGE_EXCEPTION: {
-                                    $style = 'style=dotted, penwidth=3.0, color="#0000ff"';
+                                    $style = 'style=dotted, penwidth=3.0, color="#204a87"';
                                 }
                                 break;
 
                                 default: {
-                                    $style = 'color="#0000ff"';
+                                    $style = 'color="#204a87"';
                                 }
 
                             }
