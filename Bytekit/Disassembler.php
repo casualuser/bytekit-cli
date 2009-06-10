@@ -80,16 +80,22 @@ class Bytekit_Disassembler
     /**
      * Wrapper for bytekit_disassemble_file().
      *
+     * @param  boolean $decodeLabels
      * @return array
      */
-    public function disassemble()
+    public function disassemble($decodeLabels = TRUE)
     {
         $result = array();
 
         foreach ($this->bytecode['functions'] as $function => $oparray) {
-            $cv     = array();
-            $ops    = array();
-            $labels = bytekit_find_jump_labels($oparray);
+            $cv  = array();
+            $ops = array();
+
+            if ($decodeLabels) {
+                $labels = bytekit_find_jump_labels($oparray);
+            } else {
+                $labels = array();
+            }
 
             if (isset($oparray['raw']['cv'])) {
                 foreach ($oparray['raw']['cv'] as $key => $name) {
