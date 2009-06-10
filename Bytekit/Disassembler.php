@@ -115,7 +115,10 @@ class Bytekit_Disassembler
             }
 
             $result[$function] = array(
-              'cv' => $cv, 'ops' => $ops, 'num_ops' => count($oparray['code'])
+              'cfg'     => $oparray['cfg'],
+              'cv'      => $cv,
+              'ops'     => $ops,
+              'num_ops' => count($oparray['code'])
             );
         }
 
