@@ -53,6 +53,45 @@
  */
 class Bytekit_TextUI_ResultFormatter_Disassembler_DOT
 {
+    const GRAPH = <<<EOT
+digraph flowgraph {
+node [
+    fontname="Courier"
+    fontsize="12"
+    shape="plaintext"
+];
+
+graph [
+    rankdir="HR"
+    bgcolor="#f7f7f7"
+    label="Control Flow Graph for %s()"
+    labeljust="c"
+    labelloc="t"
+    fontname="Courier"
+    fontsize="16"
+];
+
+mindist = 0.4;
+overlap = false;
+
+%s
+%s
+}
+EOT;
+
+    const NODE = <<<EOT
+"bb_%d" [
+  label =<<TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#ffffff">
+<TR><TD BGCOLOR="#FF8888" colspan="4" ALIGN="LEFT"><FONT face="Courier-Bold" point-size="12">%s:</FONT></TD></TR>
+%s
+</TABLE>>
+];
+EOT;
+
+    const INSTRUCTION = <<<EOT
+<TR><TD ALIGN="LEFT">%s</TD><TD ALIGN="LEFT">%s</TD><TD ALIGN="LEFT">%s</TD><TD ALIGN="LEFT">%s</TD></TR>
+EOT;
+
     /**
      * Formats a result set from Bytekit_Disassembler::disassemble() as DOT.
      *
@@ -63,6 +102,116 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_DOT
     {
         if (!is_dir($directory)) {
             mkdir($directory);
+        }
+
+        $id = 1;
+
+        foreach ($result as $file => $functions) {
+            foreach ($functions as $function => $data) {
+                $bb    = 1;
+                $nodes = array();
+
+                foreach ($data['ops'] as $line => $ops) {
+                    foreach ($ops as $_op) {
+                        if ($_op['bb'] !== NULL && $_op['bb'] != $bb) {
+                            $bb = $_op['bb'];
+
+                            $nodes[$bb] = array(
+                              'id'           => $id++,
+                              'address'      => $_op['address'],
+                              'instructions' => array()
+                            );
+                        }
+
+                        $nodes[$bb]['instructions'][] = array(
+                          'address'  => $_op['address'],
+                          'mnemonic' => $_op['mnemonic'],
+                          'operands' => $_op['operands'],
+                          'results'  => $_op['results']
+                        );
+                    }
+                }
+
+                $_nodes = '';
+
+                foreach ($nodes as $bb => $node) {
+                    $instructions = '';
+
+                    foreach ($node['instructions'] as $instruction) {
+                        $instructions .= sprintf(
+                          self::INSTRUCTION,
+                          htmlentities(sprintf('%08x', $instruction['address'])),
+                          htmlentities($instruction['mnemonic']),
+                          htmlentities($instruction['results']),
+                          htmlentities($instruction['operands'])
+                        );
+                    }
+
+                    $_nodes .= sprintf(
+                      self::NODE,
+                      $bb,
+                      htmlentities(sprintf('%08x', $node['address'])),
+                      $instructions
+                    );
+                }
+
+                $edges = '';
+
+                foreach ($data['cfg'] as $id => $cfg) {
+                    if (isset($nodes[$id])) {
+                        foreach ($cfg as $key => $value) {
+                            switch ($value) {
+                                case BYTEKIT_EDGE_TRUE: {
+                                    $style = 'color="#00ff00"';
+                                }
+                                break;
+
+                                case BYTEKIT_EDGE_FALSE: {
+                                    $style = 'color="#ff0000"';
+                                }
+                                break;
+
+                                case BYTEKIT_EDGE_NORMAL: {
+                                    $style = 'color="#000000"';
+                                }
+                                break;
+
+                                case BYTEKIT_EDGE_EXCEPTION: {
+                                    $style = 'style=dotted, penwidth=3.0, color="#0000ff"';
+                                }
+                                break;
+
+                                default: {
+                                    $style = 'color="#0000ff"';
+                                }
+
+                            }
+
+                            $edges .= sprintf(
+                              '"bb_%d" -> "bb_%d" [%s];' . "\n",
+                              $id,
+                              $key,
+                              $style
+                            );
+                        }
+                    }
+                }
+
+                file_put_contents(
+                  sprintf(
+                    '%s%s%s.dot',
+                    $directory,
+                    DIRECTORY_SEPARATOR,
+                    preg_replace('#[^\w.]#', '_', $function)
+                  ),
+                  sprintf(
+                    self::GRAPH,
+                    $function,
+                    $_nodes,
+                    $edges
+                  )
+                );
+            }
         }
     }
 }
