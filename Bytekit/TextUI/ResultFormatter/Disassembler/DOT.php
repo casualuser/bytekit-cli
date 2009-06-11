@@ -82,7 +82,7 @@ EOT;
     const NODE = <<<EOT
 "bb_%d" [
   label =<<table border="2" cellborder="0" cellspacing="0" bgcolor="#d3d7cf">
-<tr><td bgcolor="#fcaf3e" colspan="4" align="left"><font face="Courier-Bold" point-size="12">%s:</font></td></tr>
+<tr><td bgcolor="#fcaf3e" colspan="4" align="left"><font face="Courier-Bold" point-size="12">%s</font></td></tr>
 %s
 </table>>
 ];
