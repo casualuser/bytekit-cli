@@ -119,7 +119,6 @@ EOT;
 
                             $nodes[$bb] = array(
                               'id'           => $id++,
-                              'address'      => $_op['address'],
                               'instructions' => array()
                             );
                         }
@@ -151,7 +150,7 @@ EOT;
                     $_nodes .= sprintf(
                       self::NODE,
                       $bb,
-                      htmlentities(sprintf('%08x', $node['address'])),
+                      htmlentities(sprintf('%08x', $node['instructions'][0]['address'])),
                       $instructions
                     );
                 }
