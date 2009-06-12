@@ -42,7 +42,7 @@
  */
 
 /**
- * DOT formatter for result sets from Bytekit_Disassembler::disassemble().
+ * Visualizer for result sets from Bytekit_Disassembler::disassemble().
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
@@ -51,7 +51,7 @@
  * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
  * @since     Class available since Release 1.0.0
  */
-class Bytekit_TextUI_ResultFormatter_Disassembler_DOT
+class Bytekit_TextUI_ResultFormatter_Disassembler_Graph
 {
     const GRAPH = <<<EOT
 digraph flowgraph {
@@ -94,18 +94,24 @@ EOT;
 EOT;
 
     /**
-     * Formats a result set from Bytekit_Disassembler::disassemble() as DOT.
+     * @var boolean
+     */
+    protected $format;
+
+    /**
+     * Visualizes a result set from Bytekit_Disassembler::disassemble().
      *
      * @param array  $result
      * @param string $directory
      */
-    public function formatResult(array $result, $directory)
+    public function formatResult(array $result, $directory, $format = 'dot')
     {
         if (!is_dir($directory)) {
             mkdir($directory);
         }
 
-        $id = 1;
+        $this->format = $format;
+        $id           = 1;
 
         foreach ($result as $file => $functions) {
             foreach ($functions as $function => $data) {
@@ -197,22 +203,36 @@ EOT;
                     }
                 }
 
-                $filename = sprintf(
-                  '%s%s%s.dot',
-                  $directory,
-                  DIRECTORY_SEPARATOR,
-                  preg_replace('#[^\w.]#', '_', $function)
+                $dot = sprintf(
+                  self::GRAPH,
+                  $function,
+                  $_nodes,
+                  $edges
                 );
 
-                file_put_contents(
-                  $filename,
-                  sprintf(
-                    self::GRAPH,
-                    $function,
-                    $_nodes,
-                    $edges
-                  )
+                $filename = sprintf(
+                  '%s%s%s.%s',
+                  $directory,
+                  DIRECTORY_SEPARATOR,
+                  preg_replace('#[^\w.]#', '_', $function),
+                  $this->format
                 );
+
+                if ($format == 'dot') {
+                    file_put_contents($filename, $dot);
+                } else {
+                    $process = proc_open(
+                      'dot -T' . $format . ' -o' . $filename,
+                      array(0 => array('pipe', 'r')),
+                      $pipes
+                    );
+
+                    if (is_resource($process)) {
+                        fwrite($pipes[0], $dot);
+                        fclose($pipes[0]);
+                        proc_close($process);
+                    }
+                }
 
                 printf('Wrote "%s".' . "\n", $filename);
             }

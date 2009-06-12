@@ -66,7 +66,8 @@ class Bytekit_TextUI_Command
               $_SERVER['argv'],
               '',
               array(
-                'dot=',
+                'format=',
+                'graph=',
                 'help',
                 'scan=',
                 'suffixes=',
@@ -80,13 +81,19 @@ class Bytekit_TextUI_Command
             $this->showError($e->getMessage());
         }
 
+        $format    = 'dot';
         $mnemonics = array();
         $suffixes  = array('php');
 
         foreach ($options[0] as $option) {
             switch ($option[0]) {
-                case '--dot': {
-                    $dot = $option[1];
+                case '--format': {
+                    $format = $option[1];
+                }
+                break;
+
+                case '--graph': {
+                    $graph = $option[1];
                 }
                 break;
 
@@ -176,13 +183,13 @@ class Bytekit_TextUI_Command
 
             $disassembler = new Bytekit_Disassembler($files[0]);
 
-            if (isset($dot)) {
-                require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/DOT.php';
+            if (isset($graph)) {
+                require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/Graph.php';
 
                 $result = $disassembler->disassemble(FALSE);
 
-                $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_DOT;
-                $formatter->formatResult($result, $dot);
+                $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_Graph;
+                $formatter->formatResult($result, $graph, $format);
             } else {
                 require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/Text.php';
 
@@ -243,12 +250,12 @@ class Bytekit_TextUI_Command
         print <<<EOT
 Usage: bytekit [switches] <directory|file> ...
 
+  --graph <directory>      Write code flow graph(s) to directory.
   --scan <MNEMONIC,...>    Scans for unwanted mnemonics.
-
-  --suffixes <suffix,...>  A comma-separated list of file suffixes to check.
-
-  --dot <director>         Write code flow graph(s) in DOT format to directory.
   --xml <file>             Write violations report in PMD XML format.
+
+  --format <dot|svg|...>   Format for code flow graphs.
+  --suffixes <suffix,...>  A comma-separated list of file suffixes to check.
 
   --help                   Prints this usage information.
   --version                Prints the version and exits.

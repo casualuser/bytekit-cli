@@ -34,7 +34,7 @@
     <dir name="TextUI">
      <dir name="ResultFormatter">
       <dir name="Disassembler">
-       <file baseinstalldir="/" name="DOT.php" role="php">
+       <file baseinstalldir="/" name="Graph.php" role="php">
         <tasks:replace from="@package_version@" to="version" type="package-info" />
        </file>
        <file baseinstalldir="/" name="Text.php" role="php">
