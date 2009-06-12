@@ -162,8 +162,11 @@ class Bytekit_TextUI_Command
             require_once 'Bytekit/Scanner.php';
             require_once 'Bytekit/TextUI/ResultFormatter/Scanner/Text.php';
 
-            $scanner = new Bytekit_Scanner($mnemonics);
-            $result  = $scanner->scan($files);
+            $scanner = new Bytekit_Scanner(
+              array(new Bytekit_Scanner_Rule_DisallowedOpcodes($mnemonics))
+            );
+
+            $result = $scanner->scan($files);
 
             $formatter = new Bytekit_TextUI_ResultFormatter_Scanner_Text;
             print $formatter->formatResult($result);

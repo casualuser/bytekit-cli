@@ -42,7 +42,7 @@
  */
 
 /**
- * PMD XML formatter for result sets from Bytekit_Scanner::scan().
+ * Scans for unwanted opcodes.
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
@@ -51,65 +51,48 @@
  * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
  * @since     Class available since Release 1.0.0
  */
-class Bytekit_TextUI_ResultFormatter_Scanner_XML
+class Bytekit_Scanner_Rule_DisallowedOpcodes extends Bytekit_Scanner_Rule
 {
     /**
-     * Formats a result set from Bytekit_Scanner::scan() as PMD XML.
-     *
-     * @param  array $result
-     * @return string
+     * @var array
      */
-    public function formatResult(array $result)
+    protected $opcodes;
+
+    /**
+     * Constructor.
+     *
+     * @param array $opcodes
+     */
+    public function __construct(array $opcodes)
     {
-        $document = new DOMDocument('1.0', 'UTF-8');
-        $document->formatOutput = TRUE;
+        $this->opcodes = $opcodes;
+    }
 
-        $pmd = $document->createElement('pmd');
-        $pmd->setAttribute('version', 'bytekit-cli @package_version@');
-        $document->appendChild($pmd);
-
-        foreach ($result as $file => $items) {
-            $xmlFile = $document->createElement('file');
-            $xmlFile->setAttribute('name', $file);
-            $pmd->appendChild($xmlFile);
-
-            foreach ($items as $item) {
-                $namespace = FALSE;
-                $class     = FALSE;
-                $tmp       = explode('\\', $item['function']);
-                $function  = array_pop($tmp);
-
-                if (!empty($tmp)) {
-                    $namespace = join('\\', $tmp);
+    /**
+     * Scan an oparray for unwanted opcodes.
+     *
+     * @param array  $oparray
+     * @param string $file
+     * @param string $function
+     * @param array  $oparray
+     * @param array  $result
+     */
+    public function process(array $oparray, $file, $function, array &$result)
+    {
+        foreach ($oparray['code'] as $opline) {
+            if (in_array($opline['mnemonic'], $this->opcodes)) {
+                if (!isset($result[$file])) {
+                    $result[$file] = array();
                 }
 
-                $_function = explode('::', $function);
-                $function  = array_pop($_function);
-
-                if (!empty($_function)) {
-                    $class = $_function[0];
-                }
-
-                $xmlViolation = $document->createElement('violation');
-                $xmlViolation->setAttribute('rule', $item['message']);
-                $xmlViolation->setAttribute('line', $item['line']);
-
-                if ($namespace) {
-                    $xmlViolation->setAttribute('package', $namespace);
-                }
-
-                if ($class) {
-                    $xmlViolation->setAttribute('class', $class);
-                    $xmlViolation->setAttribute('method', $function);
-                } else {
-                    $xmlViolation->setAttribute('function', $function);
-                }
-
-                $xmlFile->appendChild($xmlViolation);
+                $result[$file][] = array(
+                  'file'     => $file,
+                  'line'     => $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
+                  'function' => $function,
+                  'message'  => 'Unwanted opcode "' . $opline['mnemonic'] . '"'
+                );
             }
         }
-
-        return $document->saveXML();
     }
 }
 ?>

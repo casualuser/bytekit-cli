@@ -46,24 +46,31 @@ format:
                           /usr/local/src/phpunit/trunk
     bytekit-cli 1.0.0 by Sebastian Bergmann.
 
-      - /usr/local/src/phpunit/trunk/PHPUnit/Extensions/PhptTestCase.php:223 (EVAL)
-      - /usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php:177 (EVAL)
-      - /usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php:1158 (EVAL)
-      - /usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php:1059 (EVAL)
+      - Unwanted opcode "EVAL"
+        in /usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php:177
+
+      - Unwanted opcode "EVAL"
+        in /usr/local/src/phpunit/trunk/PHPUnit/Extensions/PhptTestCase.php:223
+
+      - Unwanted opcode "EVAL"
+        in /usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php:1158
+
+      - Unwanted opcode "EVAL"
+        in /usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php:1059
 
 The report looks like this:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <pmd version="bytekit-cli 1.0.0">
-      <file name="/usr/local/src/phpunit/trunk/PHPUnit/Extensions/PhptTestCase.php">
-        <violation rule="EVAL" line="223" class="PHPUnit_Extensions_PhptTestCase" method="run"/>
-      </file>
+    <pmd version="bytekit-cli @package_version@">
       <file name="/usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php">
-        <violation rule="EVAL" line="177" class="PHPUnit_TextUI_Command" method="run"/>
+        <violation rule="Unwanted opcode &quot;EVAL&quot;" line="177" class="PHPUnit_TextUI_Command" method="run"/>
+      </file>
+      <file name="/usr/local/src/phpunit/trunk/PHPUnit/Extensions/PhptTestCase.php">
+        <violation rule="Unwanted opcode &quot;EVAL&quot;" line="223" class="PHPUnit_Extensions_PhptTestCase" method="run"/>
       </file>
       <file name="/usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php">
-        <violation rule="EVAL" line="1158" class="PHPUnit_Framework_TestCase" method="getMockFromWsdl"/>
-        <violation rule="EVAL" line="1059" class="PHPUnit_Framework_TestCase" method="getMock"/>
+        <violation rule="Unwanted opcode &quot;EVAL&quot;" line="1158" class="PHPUnit_Framework_TestCase" method="getMockFromWsdl"/>
+        <violation rule="Unwanted opcode &quot;EVAL&quot;" line="1059" class="PHPUnit_Framework_TestCase" method="getMock"/>
       </file>
     </pmd>
 

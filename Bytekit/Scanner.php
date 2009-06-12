@@ -41,8 +41,10 @@
  * @since     File available since Release 1.0.0
  */
 
+require_once 'Bytekit/Scanner/Rule.php';
+
 /**
- * Scans for unwanted mnemonics.
+ * Scans a set of files using a set of rules.
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
@@ -56,20 +58,20 @@ class Bytekit_Scanner
     /**
      * @var array
      */
-    protected $mnemonics;
+    protected $rules;
 
     /**
      * Constructor.
      *
-     * @param array $mnemonics
+     * @param array $rules
      */
-    public function __construct(array $mnemonics)
+    public function __construct(array $rules)
     {
-        $this->mnemonics = $mnemonics;
+        $this->rules = $rules;
     }
 
     /**
-     * Scan a set of files for the mnemonics.
+     * Scans a set of files using a set of rules.
      *
      * @param  array $files
      * @return array
@@ -82,18 +84,8 @@ class Bytekit_Scanner
             $bytecode = @bytekit_disassemble_file($file);
 
             foreach ($bytecode['functions'] as $function => $oparray) {
-                foreach ($oparray['code'] as $opline) {
-                    if (in_array($opline['mnemonic'], $this->mnemonics)) {
-                        if (!isset($result[$file])) {
-                            $result[$file] = array();
-                        }
-
-                        $result[$file][] = array(
-                          'function' => $function,
-                          'line'     => $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
-                          'mnemonic' => $opline['mnemonic']
-                        );
-                    }
+                foreach ($this->rules as $rule) {
+                    $rule->process($oparray, $file, $function, $result);
                 }
             }
         }
