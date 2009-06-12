@@ -42,7 +42,7 @@
  */
 
 /**
- * Base class for scanner rules.
+ * Scans for direct output of variables.
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
@@ -51,10 +51,10 @@
  * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
  * @since     Class available since Release 1.0.0
  */
-abstract class Bytekit_Scanner_Rule
+class Bytekit_Scanner_Rule_DirectOutput extends Bytekit_Scanner_Rule
 {
     /**
-     * Process an oparray.
+     * Scan an oparray for direct output of variables.
      *
      * @param array  $oparray
      * @param string $file
@@ -62,9 +62,24 @@ abstract class Bytekit_Scanner_Rule
      * @param array  $oparray
      * @param array  $result
      */
-    abstract public function process(array $oparray, $file, $function, array &$result);
-}
+    public function process(array $oparray, $file, $function, array &$result)
+    {
+        foreach ($oparray['code'] as $opline) {
+            if (($opline['mnemonic'] == 'ECHO' ||
+                 $opline['mnemonic'] == 'PRINT') &&
+                $opline['operands'][0]['string'][0] == '!') {
+                if (!isset($result[$file])) {
+                    $result[$file] = array();
+                }
 
-require_once 'Bytekit/Scanner/Rule/DirectOutput.php';
-require_once 'Bytekit/Scanner/Rule/DisallowedOpcodes.php';
+                $result[$file][] = array(
+                  'file'     => $file,
+                  'line'     => $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
+                  'function' => $function,
+                  'message'  => 'Direct output of variable'
+                );
+            }
+        }
+    }
+}
 ?>
