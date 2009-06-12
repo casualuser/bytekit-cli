@@ -61,7 +61,7 @@ format:
 The report looks like this:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <pmd version="bytekit-cli @package_version@">
+    <pmd version="bytekit-cli 1.0.0">
       <file name="/usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php">
         <violation rule="Unwanted opcode &quot;EVAL&quot;" line="177" class="PHPUnit_TextUI_Command" method="run"/>
       </file>
