@@ -107,6 +107,7 @@
    </pearinstaller>
    <extension>
     <name>bytekit</name>
+    <min>0.1.1</min>
    </extension>
   </required>
  </dependencies>
