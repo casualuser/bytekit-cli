@@ -42,7 +42,7 @@
  */
 
 /**
- * Scans for unwanted opcodes.
+ * Scans for disallowed opcodes.
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
@@ -69,7 +69,7 @@ class Bytekit_Scanner_Rule_DisallowedOpcodes extends Bytekit_Scanner_Rule
     }
 
     /**
-     * Scan an oparray for unwanted opcodes.
+     * Scan an oparray for disallowed opcodes.
      *
      * @param array  $oparray
      * @param string $file
@@ -89,7 +89,7 @@ class Bytekit_Scanner_Rule_DisallowedOpcodes extends Bytekit_Scanner_Rule
                   'file'     => $file,
                   'line'     => $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
                   'function' => $function,
-                  'message'  => 'Unwanted opcode "' . $opline['mnemonic'] . '"'
+                  'message'  => 'Disallowed opcode "' . $opline['mnemonic'] . '"'
                 );
             }
         }
