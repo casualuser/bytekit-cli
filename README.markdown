@@ -13,7 +13,7 @@ Usage Examples
 Disassemble a source file:
 
     sb@ubuntu bytekit-cli % bytekit /tmp/test.php
-    bytekit-cli @package_version@ by Sebastian Bergmann.
+    bytekit-cli 1.0.0 by Sebastian Bergmann.
 
     Filename:           /tmp/test.php
     Function:           main
@@ -41,21 +41,25 @@ Disassemble a source file:
 Scan for unwanted mnemonics in a source tree and write a report in PMD-XML
 format:
 
-    sb@ubuntu ~ % bytekit --scan EVAL \
+    sb@ubuntu ~ % bytekit --rule=DirectOutput \
+                          --rule=DisallowedOpcodes:EVAL
                           --xml pmd-bytekit.xml
                           /usr/local/src/phpunit/trunk
     bytekit-cli 1.0.0 by Sebastian Bergmann.
 
-      - Unwanted opcode "EVAL"
+      - Disallowed opcode "EVAL"
         in /usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php:177
 
-      - Unwanted opcode "EVAL"
+      - Direct output of variable
+        in /usr/local/src/phpunit/trunk/PHPUnit/Extensions/Database/UI/Mediums/Text.php:130
+
+      - Disallowed opcode "EVAL"
         in /usr/local/src/phpunit/trunk/PHPUnit/Extensions/PhptTestCase.php:223
 
-      - Unwanted opcode "EVAL"
+      - Disallowed opcode "EVAL"
         in /usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php:1158
 
-      - Unwanted opcode "EVAL"
+      - Disallowed opcode "EVAL"
         in /usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php:1059
 
 The report looks like this:
@@ -63,14 +67,17 @@ The report looks like this:
     <?xml version="1.0" encoding="UTF-8"?>
     <pmd version="bytekit-cli 1.0.0">
       <file name="/usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php">
-        <violation rule="Unwanted opcode &quot;EVAL&quot;" line="177" class="PHPUnit_TextUI_Command" method="run"/>
+        <violation rule="Disallowed opcode &quot;EVAL&quot;" line="177" class="PHPUnit_TextUI_Command" method="run"/>
+      </file>
+      <file name="/usr/local/src/phpunit/trunk/PHPUnit/Extensions/Database/UI/Mediums/Text.php">
+        <violation rule="Direct output of variable" line="130" class="PHPUnit_Extensions_Database_UI_Mediums_Text" method="output"/>
       </file>
       <file name="/usr/local/src/phpunit/trunk/PHPUnit/Extensions/PhptTestCase.php">
-        <violation rule="Unwanted opcode &quot;EVAL&quot;" line="223" class="PHPUnit_Extensions_PhptTestCase" method="run"/>
+        <violation rule="Disallowed opcode &quot;EVAL&quot;" line="223" class="PHPUnit_Extensions_PhptTestCase" method="run"/>
       </file>
       <file name="/usr/local/src/phpunit/trunk/PHPUnit/Framework/TestCase.php">
-        <violation rule="Unwanted opcode &quot;EVAL&quot;" line="1158" class="PHPUnit_Framework_TestCase" method="getMockFromWsdl"/>
-        <violation rule="Unwanted opcode &quot;EVAL&quot;" line="1059" class="PHPUnit_Framework_TestCase" method="getMock"/>
+        <violation rule="Disallowed opcode &quot;EVAL&quot;" line="1158" class="PHPUnit_Framework_TestCase" method="getMockFromWsdl"/>
+        <violation rule="Disallowed opcode &quot;EVAL&quot;" line="1059" class="PHPUnit_Framework_TestCase" method="getMock"/>
       </file>
     </pmd>
 
