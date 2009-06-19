@@ -64,7 +64,4 @@ abstract class Bytekit_Scanner_Rule
      */
     abstract public function process(array $oparray, $file, $function, array &$result);
 }
-
-require_once 'Bytekit/Scanner/Rule/DirectOutput.php';
-require_once 'Bytekit/Scanner/Rule/DisallowedOpcodes.php';
 ?>
