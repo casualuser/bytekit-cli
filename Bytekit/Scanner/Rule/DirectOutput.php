@@ -67,9 +67,19 @@ class Bytekit_Scanner_Rule_DirectOutput extends Bytekit_Scanner_Rule
     public function process(array $oparray, $file, $function, array &$result)
     {
         foreach ($oparray['code'] as $opline) {
-            if (($opline['mnemonic'] == 'ECHO' ||
-                 $opline['mnemonic'] == 'PRINT') &&
+            $cv = FALSE;
+
+            if ($opline['mnemonic'] == 'ECHO' &&
                 $opline['operands'][0]['string'][0] == '!') {
+                $cv = $opline['operands'][0]['string'];
+            }
+
+            else if ($opline['mnemonic'] == 'PRINT' &&
+                $opline['operands'][1]['string'][0] == '!') {
+                $cv = $opline['operands'][1]['string'];
+            }
+
+            if ($cv !== FALSE) {
                 if (!isset($result[$file])) {
                     $result[$file] = array();
                 }
@@ -78,7 +88,10 @@ class Bytekit_Scanner_Rule_DirectOutput extends Bytekit_Scanner_Rule
                   'file'     => $file,
                   'line'     => $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
                   'function' => $function,
-                  'message'  => 'Direct output of variable'
+                  'message'  => sprintf(
+                    'Direct output of variable $%s',
+                    $oparray['raw']['cv'][str_replace('!', '', $cv)]
+                  )
                 );
             }
         }
