@@ -69,7 +69,7 @@ class Bytekit_TextUI_Command
                 'format=',
                 'graph=',
                 'help',
-                'scan=',
+                'rule=',
                 'suffixes=',
                 'xml=',
                 'version'
@@ -81,9 +81,9 @@ class Bytekit_TextUI_Command
             $this->showError($e->getMessage());
         }
 
-        $format    = 'dot';
-        $mnemonics = array();
-        $suffixes  = array('php');
+        $format   = 'dot';
+        $rules    = array();
+        $suffixes = array('php');
 
         foreach ($options[0] as $option) {
             switch ($option[0]) {
@@ -103,9 +103,33 @@ class Bytekit_TextUI_Command
                 }
                 break;
 
-                case '--scan': {
-                    $mnemonics = explode(',', $option[1]);
-                    array_map('trim', $mnemonics);
+                case '--rule': {
+                    if (strpos($option[1], ':') !== FALSE) {
+                        list($rule, $ruleOptions) = explode(':', $option[1]);
+                    } else {
+                        $rule = $option[1];
+                    }
+
+                    switch ($rule) {
+                        case 'DirectOutput': {
+                            require_once 'Bytekit/Scanner/Rule/DirectOutput.php';
+
+                            $rules[] = new Bytekit_Scanner_Rule_DirectOutput;
+                        }
+                        break;
+
+                        case 'DisallowedOpcodes': {
+                            $disallowedOpcodes = explode(',', $ruleOptions);
+                            array_map('trim', $disallowedOpcodes);
+
+                            require_once 'Bytekit/Scanner/Rule/DisallowedOpcodes.php';
+
+                            $rules[] = new Bytekit_Scanner_Rule_DisallowedOpcodes(
+                              $disallowedOpcodes
+                            );
+                        }
+                        break;
+                    }
                 }
                 break;
 
@@ -158,17 +182,14 @@ class Bytekit_TextUI_Command
 
         $this->printVersionString();
 
-        if (!empty($mnemonics)) {
+        if (!empty($rules)) {
             require_once 'Bytekit/Scanner.php';
             require_once 'Bytekit/TextUI/ResultFormatter/Scanner/Text.php';
 
-            $scanner = new Bytekit_Scanner(
-              array(new Bytekit_Scanner_Rule_DisallowedOpcodes($mnemonics))
-            );
-
-            $result = $scanner->scan($files);
-
+            $scanner   = new Bytekit_Scanner($rules);
+            $result    = $scanner->scan($files);
             $formatter = new Bytekit_TextUI_ResultFormatter_Scanner_Text;
+
             print $formatter->formatResult($result);
 
             if (isset($xml)) {
@@ -254,10 +275,11 @@ class Bytekit_TextUI_Command
 Usage: bytekit [switches] <directory|file> ...
 
   --graph <directory>      Write code flow graph(s) to directory.
-  --scan <MNEMONIC,...>    Scans for unwanted mnemonics.
+  --format <dot|svg|...>   Format for code flow graphs.
+
+  --rule <rule>:<options>  Applies rules and reports violations.
   --xml <file>             Write violations report in PMD XML format.
 
-  --format <dot|svg|...>   Format for code flow graphs.
   --suffixes <suffix,...>  A comma-separated list of file suffixes to check.
 
   --help                   Prints this usage information.
