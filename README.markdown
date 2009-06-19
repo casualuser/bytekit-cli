@@ -50,7 +50,13 @@ format:
       - Disallowed opcode "EVAL"
         in /usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php:177
 
-      - Direct output of variable
+      - Direct output of variable $buffer
+        in /usr/local/src/phpunit/trunk/PHPUnit/TextUI/TestRunner.php:468
+
+      - Direct output of variable $buffer
+        in /usr/local/src/phpunit/trunk/PHPUnit/Util/Printer.php:173
+
+      - Direct output of variable $message
         in /usr/local/src/phpunit/trunk/PHPUnit/Extensions/Database/UI/Mediums/Text.php:130
 
       - Disallowed opcode "EVAL"
@@ -69,8 +75,14 @@ The report looks like this:
       <file name="/usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php">
         <violation rule="Disallowed opcode &quot;EVAL&quot;" line="177" class="PHPUnit_TextUI_Command" method="run"/>
       </file>
+      <file name="/usr/local/src/phpunit/trunk/PHPUnit/TextUI/TestRunner.php">
+        <violation rule="Direct output of variable $buffer" line="468" class="PHPUnit_TextUI_TestRunner" method="write"/>
+      </file>
+      <file name="/usr/local/src/phpunit/trunk/PHPUnit/Util/Printer.php">
+        <violation rule="Direct output of variable $buffer" line="173" class="PHPUnit_Util_Printer" method="write"/>
+      </file>
       <file name="/usr/local/src/phpunit/trunk/PHPUnit/Extensions/Database/UI/Mediums/Text.php">
-        <violation rule="Direct output of variable" line="130" class="PHPUnit_Extensions_Database_UI_Mediums_Text" method="output"/>
+        <violation rule="Direct output of variable $message" line="130" class="PHPUnit_Extensions_Database_UI_Mediums_Text" method="output"/>
       </file>
       <file name="/usr/local/src/phpunit/trunk/PHPUnit/Extensions/PhptTestCase.php">
         <violation rule="Disallowed opcode &quot;EVAL&quot;" line="223" class="PHPUnit_Extensions_PhptTestCase" method="run"/>
