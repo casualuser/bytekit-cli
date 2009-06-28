@@ -61,7 +61,6 @@ class Bytekit_Scanner_Rule_DirectOutput extends Bytekit_Scanner_Rule
      * @param array  $oparray
      * @param string $file
      * @param string $function
-     * @param array  $oparray
      * @param array  $result
      */
     public function process(array $oparray, $file, $function, array &$result)
@@ -80,18 +79,16 @@ class Bytekit_Scanner_Rule_DirectOutput extends Bytekit_Scanner_Rule
             }
 
             if ($cv !== FALSE) {
-                if (!isset($result[$file])) {
-                    $result[$file] = array();
-                }
-
-                $result[$file][] = array(
-                  'file'     => $file,
-                  'line'     => $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
-                  'function' => $function,
-                  'message'  => sprintf(
+                $this->addViolation(
+                  sprintf(
                     'Direct output of variable $%s',
                     $oparray['raw']['cv'][str_replace('!', '', $cv)]
-                  )
+                  ),
+                  $oparray,
+                  $file,
+                  $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
+                  $function,
+                  $result
                 );
             }
         }

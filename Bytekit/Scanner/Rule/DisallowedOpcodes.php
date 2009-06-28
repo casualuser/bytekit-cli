@@ -76,22 +76,19 @@ class Bytekit_Scanner_Rule_DisallowedOpcodes extends Bytekit_Scanner_Rule
      * @param array  $oparray
      * @param string $file
      * @param string $function
-     * @param array  $oparray
      * @param array  $result
      */
     public function process(array $oparray, $file, $function, array &$result)
     {
         foreach ($oparray['code'] as $opline) {
             if (in_array($opline['mnemonic'], $this->opcodes)) {
-                if (!isset($result[$file])) {
-                    $result[$file] = array();
-                }
-
-                $result[$file][] = array(
-                  'file'     => $file,
-                  'line'     => $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
-                  'function' => $function,
-                  'message'  => 'Disallowed opcode "' . $opline['mnemonic'] . '"'
+                $this->addViolation(
+                  'Disallowed opcode "' . $opline['mnemonic'] . '"',
+                  $oparray,
+                  $file,
+                  $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
+                  $function,
+                  $result
                 );
             }
         }

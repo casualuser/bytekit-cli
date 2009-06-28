@@ -59,9 +59,32 @@ abstract class Bytekit_Scanner_Rule
      * @param array  $oparray
      * @param string $file
      * @param string $function
-     * @param array  $oparray
      * @param array  $result
      */
     abstract public function process(array $oparray, $file, $function, array &$result);
+
+    /**
+     * Reports a violation.
+     *
+     * @param string  $message
+     * @param array   $oparray
+     * @param string  $file
+     * @param integer $line
+     * @param string  $function
+     * @param array   $result
+     */
+    protected function addViolation($message, array $oparray, $file, $line, $function, array &$result)
+    {
+        if (!isset($result[$file])) {
+            $result[$file] = array();
+        }
+
+        $result[$file][] = array(
+          'file'     => $file,
+          'line'     => $line,
+          'function' => $function,
+          'message'  => $message
+        );
+    }
 }
 ?>
