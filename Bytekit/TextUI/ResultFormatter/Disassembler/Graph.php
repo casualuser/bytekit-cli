@@ -53,8 +53,7 @@
  */
 class Bytekit_TextUI_ResultFormatter_Disassembler_Graph
 {
-    const GRAPH = <<<EOT
-digraph flowgraph {
+    const GRAPH = 'digraph flowgraph {
 node [
     fontname="Courier"
     fontsize="12"
@@ -76,22 +75,18 @@ overlap = false;
 
 %s
 %s
-}
-EOT;
+}';
 
-    const NODE = <<<EOT
-"bb_%d" [
+    const NODE = '"bb_%d" [
   label =<<table border="2" cellborder="0" cellspacing="0" bgcolor="#d3d7cf">
 <tr><td bgcolor="#fcaf3e" colspan="4" align="left"><font face="Courier-Bold" point-size="12">%s</font></td></tr>
 %s
 </table>>
-];
-EOT;
+];';
 
-    const INSTRUCTION = <<<EOT
-<tr><td align="left">%s</td><td align="left">%s</td><td align="left">%s</td><td align="left">%s</td></tr>
+    const INSTRUCTION = '<tr><td align="left">%s</td><td align="left">%s</td><td align="left">%s</td><td align="left">%s</td></tr>
 
-EOT;
+';
 
     /**
      * @var boolean
