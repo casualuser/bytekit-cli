@@ -66,6 +66,7 @@ class Bytekit_TextUI_Command
               $_SERVER['argv'],
               '',
               array(
+                'eliminate-dead-code',
                 'format=',
                 'graph=',
                 'help',
@@ -81,12 +82,18 @@ class Bytekit_TextUI_Command
             $this->showError($e->getMessage());
         }
 
-        $format   = 'dot';
-        $rules    = array();
-        $suffixes = array('php');
+        $eliminateDeadCode = FALSE;
+        $format            = 'dot';
+        $rules             = array();
+        $suffixes          = array('php');
 
         foreach ($options[0] as $option) {
             switch ($option[0]) {
+                case '--eliminate-dead-code': {
+                    $eliminateDeadCode = TRUE;
+                }
+                break;
+
                 case '--format': {
                     $format = $option[1];
                 }
@@ -210,14 +217,14 @@ class Bytekit_TextUI_Command
             if (isset($graph)) {
                 require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/Graph.php';
 
-                $result = $disassembler->disassemble(FALSE);
+                $result = $disassembler->disassemble(FALSE, $eliminateDeadCode);
 
                 $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_Graph;
                 $formatter->formatResult($result, $graph, $format);
             } else {
                 require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/Text.php';
 
-                $result = $disassembler->disassemble();
+                $result = $disassembler->disassemble(TRUE, $eliminateDeadCode);
 
                 $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_Text;
                 print $formatter->formatResult($result);
@@ -280,6 +287,7 @@ Usage: bytekit [switches] <directory|file> ...
   --rule <rule>:<options>  Applies rules and reports violations.
   --xml <file>             Write violations report in PMD XML format.
 
+  --eliminate-dead-code    Eliminate dead code.
   --suffixes <suffix,...>  A comma-separated list of file suffixes to check.
 
   --help                   Prints this usage information.

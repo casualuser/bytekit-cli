@@ -81,15 +81,22 @@ class Bytekit_Disassembler
      * Wrapper for bytekit_disassemble_file().
      *
      * @param  boolean $decodeLabels
+     * @param  boolean $eliminateDeadCode
      * @return array
      */
-    public function disassemble($decodeLabels = TRUE)
+    public function disassemble($decodeLabels = TRUE, $eliminateDeadCode = FALSE)
     {
         $result = array();
 
         foreach ($this->bytecode['functions'] as $function => $oparray) {
             $cv  = array();
             $ops = array();
+
+            if ($eliminateDeadCode) {
+                $deadCode = array_flip(bytekit_eliminate_dead_code($oparray));
+            } else {
+                $deadCode = array();
+            }
 
             if ($decodeLabels) {
                 $labels = bytekit_find_jump_labels($oparray);
@@ -104,20 +111,24 @@ class Bytekit_Disassembler
             }
 
             foreach ($oparray['code'] as $opline) {
-                $lineNumber = $oparray['raw']['opcodes'][$opline['opline']]['lineno'];
-                $operands   = bytekit_decode_operands($opline['operands'], $labels);
+                $bb = isset($oparray['bb'][$opline['opline']]) ? $oparray['bb'][$opline['opline']] : NULL;
 
-                if (!isset($ops[$lineNumber])) {
-                    $ops[$lineNumber] = array();
+                if (!isset($deadCode[$bb])) {
+                    $lineNumber = $oparray['raw']['opcodes'][$opline['opline']]['lineno'];
+                    $operands   = bytekit_decode_operands($opline['operands'], $labels);
+
+                    if (!isset($ops[$lineNumber])) {
+                        $ops[$lineNumber] = array();
+                    }
+
+                    $ops[$lineNumber][] = array(
+                      'bb'       => $bb,
+                      'address'  => $opline['address'],
+                      'mnemonic' => $opline['mnemonic'],
+                      'operands' => join(', ', $operands['operands']),
+                      'results'  => join(', ', $operands['results'])
+                    );
                 }
-
-                $ops[$lineNumber][] = array(
-                  'bb'       => isset($oparray['bb'][$opline['opline']]) ? $oparray['bb'][$opline['opline']] : NULL,
-                  'address'  => $opline['address'],
-                  'mnemonic' => $opline['mnemonic'],
-                  'operands' => join(', ', $operands['operands']),
-                  'results'  => join(', ', $operands['results'])
-                );
             }
 
             $result[$function] = array(
