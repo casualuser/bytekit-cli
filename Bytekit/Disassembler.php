@@ -110,6 +110,8 @@ class Bytekit_Disassembler
                 }
             }
 
+            $numOps = 0;
+
             foreach ($oparray['code'] as $opline) {
                 $bb = isset($oparray['bb'][$opline['opline']]) ? $oparray['bb'][$opline['opline']] : NULL;
 
@@ -128,6 +130,8 @@ class Bytekit_Disassembler
                       'operands' => join(', ', $operands['operands']),
                       'results'  => join(', ', $operands['results'])
                     );
+
+                    $numOps++;
                 }
             }
 
@@ -135,7 +139,7 @@ class Bytekit_Disassembler
               'cfg'     => $oparray['cfg'],
               'cv'      => $cv,
               'ops'     => $ops,
-              'num_ops' => count($oparray['code'])
+              'num_ops' => $numOps
             );
         }
 
