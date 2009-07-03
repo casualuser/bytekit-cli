@@ -78,10 +78,10 @@
     <file baseinstalldir="/" name="Disassembler.php" role="php">
      <tasks:replace from="@package_version@" to="version" type="package-info" />
     </file>
-    <file baseinstalldir="/" name="Functions.php" role="php">
+    <file baseinstalldir="/" name="Scanner.php" role="php">
      <tasks:replace from="@package_version@" to="version" type="package-info" />
     </file>
-    <file baseinstalldir="/" name="Scanner.php" role="php">
+    <file baseinstalldir="/" name="Util.php" role="php">
      <tasks:replace from="@package_version@" to="version" type="package-info" />
     </file>
    </dir>

@@ -41,7 +41,7 @@
  * @since     File available since Release 1.0.0
  */
 
-require_once 'Bytekit/Functions.php';
+require_once 'Bytekit/Util.php';
 
 /**
  * Disassembler.
@@ -93,13 +93,13 @@ class Bytekit_Disassembler
             $ops = array();
 
             if ($eliminateDeadCode) {
-                $deadCode = array_flip(bytekit_eliminate_dead_code($oparray));
+                $deadCode = array_flip(Bytekit_Util::eliminateDeadCode($oparray));
             } else {
                 $deadCode = array();
             }
 
             if ($decodeLabels) {
-                $labels = bytekit_find_jump_labels($oparray);
+                $labels = Bytekit_Util::findJumpLabels($oparray);
             } else {
                 $labels = array();
             }
@@ -117,7 +117,7 @@ class Bytekit_Disassembler
 
                 if (!isset($deadCode[$bb])) {
                     $lineNumber = $oparray['raw']['opcodes'][$opline['opline']]['lineno'];
-                    $operands   = bytekit_decode_operands($opline['operands'], $labels);
+                    $operands   = Bytekit_Util::decodeOperands($opline['operands'], $labels);
 
                     if (!isset($ops[$lineNumber])) {
                         $ops[$lineNumber] = array();
