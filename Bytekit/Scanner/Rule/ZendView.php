@@ -66,7 +66,6 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
      */
     public function process(array $oparray, $file, $function, array &$result)
     {
-        var_dump($oparray);
         foreach ($oparray['code'] as $n => $opline) {
             $violation = FALSE;
 
@@ -81,12 +80,20 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
                     $c = $n;
                     while ($c >= 0 && $this->_lastOpCodeIs('FETCH_OBJ_R', $oparray, $c--)) {
 
-                            var_dump($oparray['code'][$c]['operands'], $c);
                         $operand = array_pop(
                             $oparray['code'][$c]['operands']
                         );
 
                         $propertyChain[] = $operand['value'];
+                    }
+
+
+                    if (isset($oparray['raw']['cv'][0]) &&
+                        $oparray['raw']['line_end'] == $opline['opline']) {
+
+                        $propertyChain[] = $oparray['raw']['cv'][0];
+                    } else {
+                        $propertyChain[] = 'this';
                     }
                 }
             }
@@ -94,9 +101,9 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
             if ($violation !== FALSE) {
                 $this->addViolation(
                   sprintf(
-                    'Property $this->%s has been printed without being'
+                    'Property $%s has been printed without being'
                     . ' safeguarded with $this->escape() or $this->translate()',
-                    join('->', $propertyChain)
+                    join('->', array_reverse($propertyChain))
                   ),
                   $oparray,
                   $file,
