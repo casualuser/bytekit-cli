@@ -37,7 +37,7 @@
  *
  * @package   Bytekit
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>, Lars Strojny <lstrojny@php.net>
- * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>, Lars Strojny <lstrojny@php.net>
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @since     File available since Release 1.0.0
  */
@@ -48,7 +48,7 @@ require_once 'Bytekit/Scanner/Rule.php';
  * Scans for direct output of properties like in Zend_View
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>, Lars Strojny <lstrojny@php.net>
- * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>, Lars Strojny <lstrojny@php.net>
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version   Release: @package_version@
  * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
