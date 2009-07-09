@@ -102,7 +102,7 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
                 $this->addViolation(
                   sprintf(
                     'Property $%s has been printed without being'
-                    . ' safeguarded with $this->escape()',
+                    . ' safeguarded with Zend_View::escape()',
                     join('->', array_reverse($propertyChain))
                   ),
                   $oparray,
