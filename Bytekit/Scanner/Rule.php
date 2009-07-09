@@ -86,5 +86,20 @@ abstract class Bytekit_Scanner_Rule
           'message'  => $message
         );
     }
+
+    /**
+     * Checks the previous opcode.
+     *
+     * @param  integer $opcode
+     * @param  array   $oparray
+     * @param  integer $current
+     * @return boolean
+     * @author Lars Strojny <lstrojny@php.net>
+     */
+    protected function lastOpCodeIs($opcode, $oparray, $current)
+    {
+        return isset($oparray['code'][$current - 1]) &&
+               $oparray['code'][$current - 1]['mnemonic'] == $opcode;
+    }
 }
 ?>

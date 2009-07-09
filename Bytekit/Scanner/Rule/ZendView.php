@@ -3,7 +3,6 @@
  * bytekit-cli
  *
  * Copyright (c) 2009, Sebastian Bergmann <sb@sebastian-bergmann.de>.
- * Copyright (c) 2009, Lars Strojny <lstrojny@php.net>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +36,8 @@
  *
  * @package   Bytekit
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>, Lars Strojny <lstrojny@php.net>
- * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>, Lars Strojny <lstrojny@php.net>
+ * @author    Lars Strojny <lstrojny@php.net>
+ * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @since     File available since Release 1.0.0
  */
@@ -45,10 +45,11 @@
 require_once 'Bytekit/Scanner/Rule.php';
 
 /**
- * Scans for direct output of properties like in Zend_View
+ * Scans for attributes that are not safe-guarded by Zend_View::escape().
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>, Lars Strojny <lstrojny@php.net>
- * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>, Lars Strojny <lstrojny@php.net>
+ * @author    Lars Strojny <lstrojny@php.net>
+ * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version   Release: @package_version@
  * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
@@ -57,7 +58,8 @@ require_once 'Bytekit/Scanner/Rule.php';
 class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
 {
     /**
-     * Scan an oparray for direct output of properties
+     * Scan an oparray for attributes that are not safe-guarded by
+     * Zend_View::escape().
      *
      * @param array  $oparray
      * @param string $file
@@ -71,26 +73,19 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
 
             if ($opline['mnemonic'] == 'ECHO' ||
                 $opline['mnemonic'] == 'PRINT') {
-
-                if ($this->_lastOpCodeIs('FETCH_OBJ_R', $oparray, $n)) {
-
-                    $violation = TRUE;
+                if ($this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $n)) {
+                    $c             = $n;
                     $propertyChain = array();
+                    $violation     = TRUE;
 
-                    $c = $n;
-                    while ($c >= 0 && $this->_lastOpCodeIs('FETCH_OBJ_R', $oparray, $c--)) {
-
-                        $operand = array_pop(
-                            $oparray['code'][$c]['operands']
-                        );
-
+                    while ($c >= 0 &&
+                           $this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $c--)) {
+                        $operand = array_pop($oparray['code'][$c]['operands']);
                         $propertyChain[] = $operand['value'];
                     }
 
-
                     if (isset($oparray['raw']['cv'][0]) &&
                         $oparray['raw']['line_end'] == $opline['opline']) {
-
                         $propertyChain[] = $oparray['raw']['cv'][0];
                     } else {
                         $propertyChain[] = 'this';
@@ -101,8 +96,7 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
             if ($violation !== FALSE) {
                 $this->addViolation(
                   sprintf(
-                    'Property $%s has been printed without being'
-                    . ' safeguarded with Zend_View::escape()',
+                    'Attribute $%s is not safe-guarded by Zend_View::escape()',
                     join('->', array_reverse($propertyChain))
                   ),
                   $oparray,
@@ -113,12 +107,6 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
                 );
             }
         }
-    }
-
-    protected function _lastOpCodeIs($opcode, $oparray, $current)
-    {
-        return isset($oparray['code'][$current - 1]) &&
-            $oparray['code'][$current - 1]['mnemonic'] == $opcode;
     }
 }
 ?>
