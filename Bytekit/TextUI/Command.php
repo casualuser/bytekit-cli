@@ -136,6 +136,13 @@ class Bytekit_TextUI_Command
                             );
                         }
                         break;
+
+                        case 'ZendView': {
+                            require_once 'Bytekit/Scanner/Rule/ZendView.php';
+
+                            $rules[] = new Bytekit_Scanner_Rule_ZendView;
+                        }
+                        break;
                     }
                 }
                 break;

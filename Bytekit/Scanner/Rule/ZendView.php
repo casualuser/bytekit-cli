@@ -35,71 +35,78 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package   Bytekit
- * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>, Lars Strojny <lstrojny@php.net>
+ * @author    Lars Strojny <lstrojny@php.net>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @since     File available since Release 1.0.0
  */
 
+require_once 'Bytekit/Scanner/Rule.php';
+
 /**
- * Base class for scanner rules.
+ * Scans for attributes that are not safe-guarded by Zend_View::escape().
  *
- * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>, Lars Strojny <lstrojny@php.net>
+ * @author    Lars Strojny <lstrojny@php.net>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version   Release: @package_version@
  * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
  * @since     Class available since Release 1.0.0
  */
-abstract class Bytekit_Scanner_Rule
+class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
 {
     /**
-     * Process an oparray.
+     * Scan an oparray for attributes that are not safe-guarded by
+     * Zend_View::escape().
      *
      * @param array  $oparray
      * @param string $file
      * @param string $function
      * @param array  $result
      */
-    abstract public function process(array $oparray, $file, $function, array &$result);
-
-    /**
-     * Reports a violation.
-     *
-     * @param string  $message
-     * @param array   $oparray
-     * @param string  $file
-     * @param integer $line
-     * @param string  $function
-     * @param array   $result
-     */
-    protected function addViolation($message, array $oparray, $file, $line, $function, array &$result)
+    public function process(array $oparray, $file, $function, array &$result)
     {
-        if (!isset($result[$file])) {
-            $result[$file] = array();
+        foreach ($oparray['code'] as $n => $opline) {
+            $violation = FALSE;
+
+            if ($opline['mnemonic'] == 'ECHO' ||
+                $opline['mnemonic'] == 'PRINT') {
+                if ($this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $n)) {
+                    $c             = $n;
+                    $propertyChain = array();
+                    $violation     = TRUE;
+
+                    while ($c >= 0 &&
+                           $this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $c--)) {
+                        $operand = array_pop($oparray['code'][$c]['operands']);
+                        $propertyChain[] = $operand['value'];
+                    }
+
+                    if (isset($oparray['raw']['cv'][0]) &&
+                        $oparray['raw']['line_end'] == $opline['opline']) {
+                        $propertyChain[] = $oparray['raw']['cv'][0];
+                    } else {
+                        $propertyChain[] = 'this';
+                    }
+                }
+            }
+
+            if ($violation !== FALSE) {
+                $this->addViolation(
+                  sprintf(
+                    'Attribute $%s is not safe-guarded by Zend_View::escape()',
+                    join('->', array_reverse($propertyChain))
+                  ),
+                  $oparray,
+                  $file,
+                  $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
+                  $function,
+                  $result
+                );
+            }
         }
-
-        $result[$file][] = array(
-          'file'     => $file,
-          'line'     => $line,
-          'function' => $function,
-          'message'  => $message
-        );
-    }
-
-    /**
-     * Checks the previous opcode.
-     *
-     * @param  integer $opcode
-     * @param  array   $oparray
-     * @param  integer $current
-     * @return boolean
-     * @author Lars Strojny <lstrojny@php.net>
-     */
-    protected function lastOpCodeIs($opcode, $oparray, $current)
-    {
-        return isset($oparray['code'][$current - 1]) &&
-               $oparray['code'][$current - 1]['mnemonic'] == $opcode;
     }
 }
 ?>
