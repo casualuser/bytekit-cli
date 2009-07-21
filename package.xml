@@ -9,8 +9,8 @@
                       http://pear.php.net/dtd/package-2.0.xsd">
  <name>bytekit-cli</name>
  <channel>pear.phpunit.de</channel>
- <summary>...</summary>
- <description>...</description>
+ <summary>A command-line tool built on the PHP Bytekit extension.</summary>
+ <description>A command-line tool built on the PHP Bytekit extension.</description>
  <lead>
   <name>Sebastian Bergmann</name>
   <user>sb</user>
