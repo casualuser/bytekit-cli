@@ -7,7 +7,7 @@
                       http://pear.php.net/dtd/tasks-1.0.xsd
                       http://pear.php.net/dtd/package-2.0
                       http://pear.php.net/dtd/package-2.0.xsd">
- <name>bytekit-cli</name>
+ <name>bytekit</name>
  <channel>pear.phpunit.de</channel>
  <summary>A command-line tool built on the PHP Bytekit extension.</summary>
  <description>A command-line tool built on the PHP Bytekit extension.</description>
