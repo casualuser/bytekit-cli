@@ -7,17 +7,17 @@
                       http://pear.php.net/dtd/tasks-1.0.xsd
                       http://pear.php.net/dtd/package-2.0
                       http://pear.php.net/dtd/package-2.0.xsd">
- <name>bytekit-cli</name>
+ <name>bytekit</name>
  <channel>pear.phpunit.de</channel>
- <summary>...</summary>
- <description>...</description>
+ <summary>A command-line tool built on the PHP Bytekit extension.</summary>
+ <description>A command-line tool built on the PHP Bytekit extension.</description>
  <lead>
   <name>Sebastian Bergmann</name>
   <user>sb</user>
   <email>sb@sebastian-bergmann.de</email>
   <active>yes</active>
  </lead>
- <date>2009-MM-DD</date>
+ <date>2009-07-21</date>
  <version>
   <release>1.0.0</release>
   <api>1.0.0</api>
