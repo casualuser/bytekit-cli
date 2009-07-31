@@ -72,62 +72,64 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
 
         foreach ($oparray['code'] as $n => $opline) {
             $violation = FALSE;
+
             if ($opline['mnemonic'] == 'ECHO' ||
                 $opline['mnemonic'] == 'PRINT') {
 
-
-                if ($this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $n) or
+                if ($this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $n) ||
                     $this->lastOpCodeIs('FETCH_DIM_R', $oparray, $n)) {
                     $c             = $n;
                     $propertyChain = array();
                     $violation     = TRUE;
 
                     while ($c >= 0 &&
-                           ($this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $c) or
-                           $this->lastOpCodeIs('FETCH_DIM_R', $oparray, $c))) {
-
-                        $operand = array_pop($oparray['code'][--$c]['operands']);
+                           ($this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $c) ||
+                            $this->lastOpCodeIs('FETCH_DIM_R', $oparray, $c))) {
+                        $operand = array_pop(
+                          $oparray['code'][--$c]['operands']
+                        );
 
                         if ($this->lastOpCodeIs('FETCH_DIM_R', $oparray, $c + 1)) {
                             $propertyChain[] = array(
-                                                'name' => $operand['value'],
-                                                'type' => 'FETCH_DIM_R',
-                                               );
+                              'name' => $operand['value'],
+                              'type' => 'FETCH_DIM_R',
+                            );
                         } else {
                             $propertyChain[] = array(
-                                                'name' => $operand['value'],
-                                                'type' => 'FETCH_OBJ_R',
-                                               );
+                              'name' => $operand['value'],
+                              'type' => 'FETCH_OBJ_R',
+                            );
                         }
                     }
 
                     $searchPosition = $n;
-                    $variableName = 'this';
-                    while ($searchPosition <= $opArraySize &&
-                        isset($oparray['code'][$searchPosition]['operands'])) {
+                    $variableName   = 'this';
 
+                    while ($searchPosition <= $opArraySize &&
+                           isset($oparray['code'][$searchPosition]['operands'])) {
                         foreach ($oparray['code'][$searchPosition]['operands'] as $operand) {
                             if ($operand['string'][0] == '!') {
-                                $cvPos = str_replace('!', '', $operand['string']);
+                                $cvPos        = str_replace('!', '', $operand['string']);
                                 $variableName = $oparray['raw']['cv'][$cvPos];
                                 break 2;
                             }
                         }
+
                         ++$searchPosition;
                     }
 
                     $propertyChain[] = array(
-                                        'name' => $variableName,
-                                        'type' => 'FETCH_OBJ_R',
-                                       );
+                      'name' => $variableName,
+                      'type' => 'FETCH_OBJ_R',
+                    );
                 }
             }
 
             if ($violation !== FALSE) {
+                $formattedProperty = NULL;
 
-                $formattedProperty = null;
                 foreach (array_values(array_reverse($propertyChain)) as $position => $property) {
-                    if ($formattedProperty === null) {
+                    if ($formattedProperty === NULL) {
                         $formattedProperty = sprintf('$%s', $property['name']);
                         continue;
                     }
@@ -141,7 +143,6 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
                         $formattedProperty .= sprintf('->%s', $property['name']);
                     }
                 }
-
 
                 $this->addViolation(
                   sprintf(
