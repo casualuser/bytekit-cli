@@ -81,6 +81,11 @@ class Bytekit_Scanner
         foreach ($files as $file) {
             $bytecode = @bytekit_disassemble_file($file);
 
+            if (!$bytecode) {
+                printf("WARNING: Could not disassemble \"%s\". Check for syntax errors.\n", $file);
+                continue;
+            }
+
             foreach ($bytecode['functions'] as $function => $oparray) {
                 foreach ($this->rules as $rule) {
                     $rule->process($oparray, $file, $function, $result);

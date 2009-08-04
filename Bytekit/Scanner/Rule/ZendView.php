@@ -68,36 +68,86 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
      */
     public function process(array $oparray, $file, $function, array &$result)
     {
+        $opArraySize = count($oparray);
+
         foreach ($oparray['code'] as $n => $opline) {
             $violation = FALSE;
 
             if ($opline['mnemonic'] == 'ECHO' ||
                 $opline['mnemonic'] == 'PRINT') {
-                if ($this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $n)) {
+
+                if ($this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $n) ||
+                    $this->lastOpCodeIs('FETCH_DIM_R', $oparray, $n)) {
                     $c             = $n;
                     $propertyChain = array();
                     $violation     = TRUE;
 
                     while ($c >= 0 &&
-                           $this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $c--)) {
-                        $operand = array_pop($oparray['code'][$c]['operands']);
-                        $propertyChain[] = $operand['value'];
+                           ($this->lastOpCodeIs('FETCH_OBJ_R', $oparray, $c) ||
+                            $this->lastOpCodeIs('FETCH_DIM_R', $oparray, $c))) {
+                        $operand = array_pop(
+                          $oparray['code'][--$c]['operands']
+                        );
+
+                        if ($this->lastOpCodeIs('FETCH_DIM_R', $oparray, $c + 1)) {
+                            $propertyChain[] = array(
+                              'name' => $operand['value'],
+                              'type' => 'FETCH_DIM_R',
+                            );
+                        } else {
+                            $propertyChain[] = array(
+                              'name' => $operand['value'],
+                              'type' => 'FETCH_OBJ_R',
+                            );
+                        }
                     }
 
-                    if (isset($oparray['raw']['cv'][0]) &&
-                        $oparray['raw']['line_end'] == $opline['opline']) {
-                        $propertyChain[] = $oparray['raw']['cv'][0];
-                    } else {
-                        $propertyChain[] = 'this';
+                    $searchPosition = $n;
+                    $variableName   = 'this';
+
+                    while ($searchPosition <= $opArraySize &&
+                           isset($oparray['code'][$searchPosition]['operands'])) {
+                        foreach ($oparray['code'][$searchPosition]['operands'] as $operand) {
+                            if ($operand['string'][0] == '!') {
+                                $cvPos        = str_replace('!', '', $operand['string']);
+                                $variableName = $oparray['raw']['cv'][$cvPos];
+                                break 2;
+                            }
+                        }
+
+                        ++$searchPosition;
                     }
+
+                    $propertyChain[] = array(
+                      'name' => $variableName,
+                      'type' => 'FETCH_OBJ_R',
+                    );
                 }
             }
 
             if ($violation !== FALSE) {
+                $formattedProperty = NULL;
+
+                foreach (array_values(array_reverse($propertyChain)) as $position => $property) {
+                    if ($formattedProperty === NULL) {
+                        $formattedProperty = sprintf('$%s', $property['name']);
+                        continue;
+                    }
+
+                    if ($property['type'] == 'FETCH_DIM_R') {
+                        $formattedProperty .= sprintf('["%s"]', $property['name']);
+                        continue;
+                    }
+
+                    if ($property['type'] == 'FETCH_OBJ_R') {
+                        $formattedProperty .= sprintf('->%s', $property['name']);
+                    }
+                }
+
                 $this->addViolation(
                   sprintf(
-                    'Attribute $%s is not safe-guarded by Zend_View::escape()',
-                    join('->', array_reverse($propertyChain))
+                    'Attribute %s is not safe-guarded by Zend_View::escape()',
+                    $formattedProperty
                   ),
                   $oparray,
                   $file,

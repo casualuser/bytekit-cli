@@ -213,6 +213,10 @@ class Bytekit_TextUI_Command
                 file_put_contents($xml, $formatter->formatResult($result));
             }
 
+            if (!empty($result)) {
+                exit(1);
+            }
+
             exit(0);
         }
 
