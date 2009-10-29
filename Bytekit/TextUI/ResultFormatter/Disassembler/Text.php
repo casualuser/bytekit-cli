@@ -63,19 +63,19 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_Text
     {
         $buffer = '';
 
-        foreach ($result as $file => $functions) {
+        foreach ($result as $fileName => $functions) {
             uasort($functions, array($this, 'compare'));
 
             $first = TRUE;
 
-            foreach ($functions as $name => $data) {
+            foreach ($functions as $functionName => $data) {
                 $buffer .= sprintf(
                   "%sFilename:           %s\n" .
                   "Function:           %s\n" .
                   "Number of oplines:  %d\n",
                   $first ? '' : "\n",
-                  $file,
-                  $name,
+                  $fileName,
+                  $functionName,
                   $data['num_ops']
                 );
 
@@ -91,7 +91,7 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_Text
                 $bb      = 1;
                 $op      = 0;
 
-                foreach ($data['ops'] as $line => $ops) {
+                foreach ($data['ops'] as $lineNumber => $ops) {
                     $first = TRUE;
 
                     foreach ($ops as $_op) {
@@ -103,12 +103,12 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_Text
                         if ($first) {
                             $first = FALSE;
                         } else {
-                            $line = '';
+                            $lineNumber = '';
                         }
 
                         $buffer .= sprintf(
                           "  %-5s %-5d %-32s %-7s %s\n",
-                          $line,
+                          $lineNumber,
                           $op++,
                           $_op['mnemonic'],
                           $_op['results'],
