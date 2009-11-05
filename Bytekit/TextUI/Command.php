@@ -41,8 +41,8 @@
  * @since     File available since Release 1.0.0
  */
 
+require_once 'File/Iterator.php';
 require_once 'Bytekit/TextUI/Getopt.php';
-require_once 'Bytekit/Util/FilterIterator.php';
 
 /**
  * TextUI frontend for Bytekit.
@@ -171,7 +171,7 @@ class Bytekit_TextUI_Command
         if (isset($options[1][0])) {
             foreach ($options[1] as $path) {
                 if (is_dir($path)) {
-                    $iterator = new Bytekit_Util_FilterIterator(
+                    $iterator = new File_Iterator(
                       new RecursiveIteratorIterator(
                         new RecursiveDirectoryIterator($path)
                       ),
@@ -255,7 +255,7 @@ class Bytekit_TextUI_Command
     protected function getFiles($path, array $suffixes)
     {
         if (is_dir($path)) {
-            return new Bytekit_Util_FilterIterator(
+            return new File_Iterator(
               new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($path)
               ),
