@@ -21,14 +21,14 @@ The PEAR channel (`pear.phpunit.de`) that is used to distribute bytekit-cli need
 This has to be done only once. Now the PEAR Installer can be used to install packages from the PHPUnit channel:
 
     sb@ubuntu ~ % pear install phpunit/bytekit
-    downloading bytekit-1.1.0.tgz ...
-    Starting to download bytekit-1.1.0.tgz (10,295 bytes)
-    .....done: 10,295 bytes
-    downloading File_Iterator-1.0.0.tgz ...
-    Starting to download File_Iterator-1.0.0.tgz (2,353 bytes)
-    ...done: 2,353 bytes
-    install ok: channel://pear.phpunit.de/File_Iterator-1.0.0
-    install ok: channel://pear.phpunit.de/bytekit-1.1.0
+    downloading bytekit-1.1.1.tgz ...
+    Starting to download bytekit-1.1.1.tgz (10,134 bytes)
+    .....done: 10,134 bytes
+    downloading File_Iterator-1.1.0.tgz ...
+    Starting to download File_Iterator-1.1.0.tgz (3,181 bytes)
+    ...done: 3,181 bytes
+    install ok: channel://pear.phpunit.de/File_Iterator-1.1.0
+    install ok: channel://pear.phpunit.de/bytekit-1.1.1
 
 After the installation you can find the bytekit-cli source files inside your local PEAR directory; the path is usually `/usr/lib/php/Bytekit`.
 
@@ -38,7 +38,7 @@ Usage Examples
 Disassemble a source file:
 
     sb@ubuntu bytekit-cli % bytekit /tmp/test.php
-    bytekit-cli 1.1.0 by Sebastian Bergmann.
+    bytekit-cli 1.1.1 by Sebastian Bergmann.
 
     Filename:           /tmp/test.php
     Function:           main
@@ -70,7 +70,7 @@ format:
                           --rule=DisallowedOpcodes:EVAL
                           --xml pmd-bytekit.xml
                           /usr/local/src/phpunit/trunk
-    bytekit-cli 1.1.0 by Sebastian Bergmann.
+    bytekit-cli 1.1.1 by Sebastian Bergmann.
 
       - Disallowed opcode "EVAL"
         in /usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php:177
@@ -96,7 +96,7 @@ format:
 The report looks like this:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <pmd version="bytekit-cli 1.1.0">
+    <pmd version="bytekit-cli 1.1.1">
       <file name="/usr/local/src/phpunit/trunk/PHPUnit/TextUI/Command.php">
         <violation rule="Disallowed opcode &quot;EVAL&quot;" line="177" class="PHPUnit_TextUI_Command" method="run"/>
       </file>
