@@ -41,8 +41,10 @@
  * @since     File available since Release 1.0.0
  */
 
+require_once 'Bytekit/Scanner/Rule.php';
+
 /**
- * Scans a set of files using a set of rules.
+ * Base class for two-pass scanner rules.
  *
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright 2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
@@ -51,93 +53,16 @@
  * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
  * @since     Class available since Release 1.0.0
  */
-class Bytekit_Scanner
+abstract class Bytekit_Scanner_Rule_TwoPass extends Bytekit_Scanner_Rule
 {
     /**
-     * @var array
-     */
-    protected $singlePassRules = array();
-
-    /**
-     * @var array
-     */
-    protected $twoPassRules = array();
-
-    /**
-     * Constructor.
+     * Process an oparray.
      *
-     * @param array $rules
+     * @param array  $oparray
+     * @param string $file
+     * @param string $function
+     * @param array  $result
      */
-    public function __construct(array $rules)
-    {
-        foreach ($rules as $rule) {
-            if ($rule instanceof Bytekit_Scanner_Rule_TwoPass) {
-                $this->twoPassRules[] = $rule;
-            }
-
-            else if ($rule instanceof Bytekit_Scanner_Rule) {
-                $this->singlePassRules[] = $rule;
-            }
-        }
-
-        $this->rules = $rules;
-    }
-
-    /**
-     * Scans a set of files using a set of rules.
-     *
-     * @param  array $files
-     * @return array
-     */
-    public function scan(array $files)
-    {
-        $result = array();
-
-        $this->doScan(
-          $files,
-          array_merge($this->singlePassRules, $this->twoPassRules),
-          $result,
-          FALSE
-        );
-
-        if (!empty($this->twoPassRules)) {
-            $this->doScan($files, $this->twoPassRules, $result, TRUE);
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param array   $files
-     * @param array   $rules
-     * @param array   $result
-     * @param boolean $secondPass
-     */
-    protected function doScan(array $files, array $rules, array &$result, $secondPass)
-    {
-        foreach ($files as $file) {
-            $bytecode = @bytekit_disassemble_file($file);
-
-            if (!$bytecode) {
-                printf(
-                  'WARNING: Could not disassemble "%s". ' .
-                  "Check for syntax errors.\n",
-                  $file
-                );
-
-                continue;
-            }
-
-            foreach ($bytecode['functions'] as $function => $oparray) {
-                foreach ($rules as $rule) {
-                    if (!$secondPass) {
-                        $rule->process($oparray, $file, $function, $result);
-                    } else {
-                        $rule->secondPass($oparray, $file, $function, $result);
-                    }
-                }
-            }
-        }
-    }
+    abstract public function secondPass(array $oparray, $file, $function, array &$result);
 }
 ?>
