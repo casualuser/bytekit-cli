@@ -39,6 +39,9 @@
       <file baseinstalldir="/" name="DirectOutput.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
+      <file baseinstalldir="/" name="ZendView.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
      </dir>
      <file baseinstalldir="/" name="Rule.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
