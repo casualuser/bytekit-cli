@@ -137,6 +137,13 @@ class Bytekit_TextUI_Command
                         }
                         break;
 
+                        case 'Output': {
+                            require_once 'Bytekit/Scanner/Rule/Output.php';
+
+                            $rules[] = new Bytekit_Scanner_Rule_Output;
+                        }
+                        break;
+
                         case 'ZendView': {
                             require_once 'Bytekit/Scanner/Rule/ZendView.php';
 
