@@ -56,12 +56,7 @@ class Bytekit_Scanner
     /**
      * @var array
      */
-    protected $singlePassRules = array();
-
-    /**
-     * @var array
-     */
-    protected $twoPassRules = array();
+    protected $rules;
 
     /**
      * Constructor.
@@ -70,16 +65,6 @@ class Bytekit_Scanner
      */
     public function __construct(array $rules)
     {
-        foreach ($rules as $rule) {
-            if ($rule instanceof Bytekit_Scanner_Rule_TwoPass) {
-                $this->twoPassRules[] = $rule;
-            }
-
-            else if ($rule instanceof Bytekit_Scanner_Rule) {
-                $this->singlePassRules[] = $rule;
-            }
-        }
-
         $this->rules = $rules;
     }
 
@@ -93,51 +78,22 @@ class Bytekit_Scanner
     {
         $result = array();
 
-        $this->doScan(
-          $files,
-          array_merge($this->singlePassRules, $this->twoPassRules),
-          $result,
-          FALSE
-        );
-
-        if (!empty($this->twoPassRules)) {
-            $this->doScan($files, $this->twoPassRules, $result, TRUE);
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param array   $files
-     * @param array   $rules
-     * @param array   $result
-     * @param boolean $secondPass
-     */
-    protected function doScan(array $files, array $rules, array &$result, $secondPass)
-    {
         foreach ($files as $file) {
             $bytecode = @bytekit_disassemble_file($file);
 
             if (!$bytecode) {
-                printf(
-                  'WARNING: Could not disassemble "%s". ' .
-                  "Check for syntax errors.\n",
-                  $file
-                );
-
+                printf("WARNING: Could not disassemble \"%s\". Check for syntax errors.\n", $file);
                 continue;
             }
 
             foreach ($bytecode['functions'] as $function => $oparray) {
-                foreach ($rules as $rule) {
-                    if (!$secondPass) {
-                        $rule->process($oparray, $file, $function, $result);
-                    } else {
-                        $rule->secondPass($oparray, $file, $function, $result);
-                    }
+                foreach ($this->rules as $rule) {
+                    $rule->process($oparray, $file, $function, $result);
                 }
             }
         }
+
+        return $result;
     }
 }
 ?>

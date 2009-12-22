@@ -42,9 +42,6 @@
       <file baseinstalldir="/" name="Output.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
-      <file baseinstalldir="/" name="TwoPass.php" role="php">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
       <file baseinstalldir="/" name="ZendView.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
