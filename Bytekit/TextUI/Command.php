@@ -41,7 +41,7 @@
  * @since     File available since Release 1.0.0
  */
 
-require_once 'File/Iterator/Factory.php';
+require_once 'File/Iterator/Autoload.php';
 require_once 'Bytekit/TextUI/Getopt.php';
 
 /**
@@ -176,7 +176,8 @@ class Bytekit_TextUI_Command
         $files = array();
 
         if (isset($options[1][0])) {
-            $files = File_Iterator_Factory::getFilesAsArray(
+            $facade = new File_Iterator_Facade;
+            $files  = $facade->getFilesAsArray(
               $options[1], $suffixes
             );
         }
