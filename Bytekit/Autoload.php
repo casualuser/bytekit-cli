@@ -41,7 +41,7 @@
  * @since     File available since Release 1.0.0
  */
 
-require_once 'PHP/File/Iterator/Autoload.php';
+require_once 'File/Iterator/Autoload.php';
 
 spl_autoload_register(
     function($class) {
