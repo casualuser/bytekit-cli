@@ -246,7 +246,7 @@ class Bytekit_TextUI_Command
 
             print $formatter->formatResult($result);
 
-            if (isset($logPmd)) {
+            if ($logPmd) {
                 $formatter = new Bytekit_TextUI_ResultFormatter_Scanner_XML;
                 file_put_contents($logPmd, $formatter->formatResult($result));
             }
@@ -261,7 +261,7 @@ class Bytekit_TextUI_Command
         if (count($files) == 1) {
             $disassembler = new Bytekit_Disassembler($files[0]);
 
-            if (isset($graph)) {
+            if ($graph) {
                 $result = $disassembler->disassemble(FALSE, $eliminateDeadCode);
 
                 $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_Graph;
