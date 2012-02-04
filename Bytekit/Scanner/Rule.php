@@ -102,4 +102,3 @@ abstract class Bytekit_Scanner_Rule
                $oparray['code'][$current - 1]['mnemonic'] == $opcode;
     }
 }
-?>

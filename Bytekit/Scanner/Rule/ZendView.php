@@ -157,4 +157,3 @@ class Bytekit_Scanner_Rule_ZendView extends Bytekit_Scanner_Rule
         }
     }
 }
-?>

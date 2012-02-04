@@ -96,4 +96,3 @@ class Bytekit_Scanner
         return $result;
     }
 }
-?>

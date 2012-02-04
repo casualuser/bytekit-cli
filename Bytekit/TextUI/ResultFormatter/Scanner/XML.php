@@ -112,4 +112,3 @@ class Bytekit_TextUI_ResultFormatter_Scanner_XML
         return $document->saveXML();
     }
 }
-?>

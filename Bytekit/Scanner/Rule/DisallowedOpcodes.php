@@ -92,4 +92,3 @@ class Bytekit_Scanner_Rule_DisallowedOpcodes extends Bytekit_Scanner_Rule
         }
     }
 }
-?>

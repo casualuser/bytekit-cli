@@ -370,4 +370,3 @@ EOT;
         return $files;
     }
 }
-?>

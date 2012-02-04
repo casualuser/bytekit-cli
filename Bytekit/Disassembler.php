@@ -144,4 +144,3 @@ class Bytekit_Disassembler
         return array($this->filename => $result);
     }
 }
-?>

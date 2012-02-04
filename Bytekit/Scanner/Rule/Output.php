@@ -81,4 +81,3 @@ class Bytekit_Scanner_Rule_Output extends Bytekit_Scanner_Rule
         }
     }
 }
-?>

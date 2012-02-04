@@ -143,4 +143,3 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_Text
         return ($a < $b) ? -1 : 1;
     }
 }
-?>

@@ -78,4 +78,3 @@ class Bytekit_TextUI_ResultFormatter_Scanner_Text
         return $buffer;
     }
 }
-?>

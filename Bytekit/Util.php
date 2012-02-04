@@ -165,4 +165,3 @@ abstract class Bytekit_Util
         return $labels;
     }
 }
-?>
