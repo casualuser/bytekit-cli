@@ -58,122 +58,183 @@ class Bytekit_TextUI_Command
      */
     public function main()
     {
+        $input = new ezcConsoleInput;
+
+        $input->registerOption(
+          new ezcConsoleOption(
+            '',
+            'eliminate-dead-code',
+            ezcConsoleInput::TYPE_NONE
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
+            '',
+            'exclude',
+            ezcConsoleInput::TYPE_STRING,
+            array(),
+            TRUE
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
+            '',
+            'format',
+            ezcConsoleInput::TYPE_STRING,
+            'dot',
+            FALSE
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
+            '',
+            'graph',
+            ezcConsoleInput::TYPE_STRING
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
+            'h',
+            'help',
+            ezcConsoleInput::TYPE_NONE,
+            NULL,
+            FALSE,
+            '',
+            '',
+            array(),
+            array(),
+            FALSE,
+            FALSE,
+            TRUE
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
+            '',
+            'log-pmd',
+            ezcConsoleInput::TYPE_STRING
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
+            '',
+            'rule',
+            ezcConsoleInput::TYPE_STRING,
+            array(),
+            TRUE
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
+            '',
+            'suffixes',
+            ezcConsoleInput::TYPE_STRING,
+            'php',
+            FALSE
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
+            'v',
+            'version',
+            ezcConsoleInput::TYPE_NONE,
+            NULL,
+            FALSE,
+            '',
+            '',
+            array(),
+            array(),
+            FALSE,
+            FALSE,
+            TRUE
+           )
+        );
+
         try {
-            $options = Bytekit_TextUI_Getopt::getopt(
-              $_SERVER['argv'],
-              '',
-              array(
-                'eliminate-dead-code',
-                'format=',
-                'graph=',
-                'help',
-                'rule=',
-                'suffixes=',
-                'xml=',
-                'version'
-              )
-            );
+            $input->process();
         }
 
-        catch (RuntimeException $e) {
-            $this->showError($e->getMessage());
+        catch (ezcConsoleOptionException $e) {
+            print $e->getMessage() . "\n";
+            exit(1);
         }
 
-        $eliminateDeadCode = FALSE;
-        $format            = 'dot';
-        $rules             = array();
-        $suffixes          = array('php');
+        if ($input->getOption('help')->value) {
+            $this->showHelp();
+            exit(0);
+        }
 
-        foreach ($options[0] as $option) {
-            switch ($option[0]) {
-                case '--eliminate-dead-code': {
-                    $eliminateDeadCode = TRUE;
+        else if ($input->getOption('version')->value) {
+            $this->printVersionString();
+            exit(0);
+        }
+
+        $arguments = $input->getArguments();
+
+        if (empty($arguments)) {
+            $this->showHelp();
+            exit(1);
+        }
+
+        $eliminateDeadCode = $input->getOption('eliminate-dead-code')->value;
+        $excludes          = $input->getOption('exclude')->value;
+        $format            = $input->getOption('format')->value;
+        $graph             = $input->getOption('graph')->value;
+        $logPmd            = $input->getOption('log-pmd')->value;
+        $_rules            = $input->getOption('rule')->value;
+        $suffixes          = explode(',', $input->getOption('suffixes')->value);
+
+        array_map('trim', $suffixes);
+
+        $rules = array();
+
+        foreach ($_rules as $rule) {
+            $ruleOptions = '';
+
+            if (strpos($rule, ':') !== FALSE) {
+                list($rule, $ruleOptions) = explode(':', $rule);
+            }
+
+            switch ($rule) {
+                case 'DirectOutput': {
+                    $rules[] = new Bytekit_Scanner_Rule_DirectOutput;
                 }
                 break;
 
-                case '--format': {
-                    $format = $option[1];
+                case 'DisallowedOpcodes': {
+                    $disallowedOpcodes = explode(',', $ruleOptions);
+                    array_map('trim', $disallowedOpcodes);
+
+                    $rules[] = new Bytekit_Scanner_Rule_DisallowedOpcodes(
+                      $disallowedOpcodes
+                    );
                 }
                 break;
 
-                case '--graph': {
-                    $graph = $option[1];
+                case 'Output': {
+                    $rules[] = new Bytekit_Scanner_Rule_Output;
                 }
                 break;
 
-                case '--help': {
-                    $this->showHelp();
-                    exit(0);
-                }
-                break;
-
-                case '--rule': {
-                    if (strpos($option[1], ':') !== FALSE) {
-                        list($rule, $ruleOptions) = explode(':', $option[1]);
-                    } else {
-                        $rule = $option[1];
-                    }
-
-                    switch ($rule) {
-                        case 'DirectOutput': {
-                            $rules[] = new Bytekit_Scanner_Rule_DirectOutput;
-                        }
-                        break;
-
-                        case 'DisallowedOpcodes': {
-                            $disallowedOpcodes = explode(',', $ruleOptions);
-                            array_map('trim', $disallowedOpcodes);
-
-                            $rules[] = new Bytekit_Scanner_Rule_DisallowedOpcodes(
-                              $disallowedOpcodes
-                            );
-                        }
-                        break;
-
-                        case 'Output': {
-                            $rules[] = new Bytekit_Scanner_Rule_Output;
-                        }
-                        break;
-
-                        case 'ZendView': {
-                            $rules[] = new Bytekit_Scanner_Rule_ZendView;
-                        }
-                        break;
-                    }
-                }
-                break;
-
-                case '--suffixes': {
-                    $suffixes = explode(',', $option[1]);
-                    array_map('trim', $suffixes);
-                }
-                break;
-
-                case '--version': {
-                    $this->printVersionString();
-                    exit(0);
-                }
-                break;
-
-                case '--xml': {
-                    $xml = $option[1];
+                case 'ZendView': {
+                    $rules[] = new Bytekit_Scanner_Rule_ZendView;
                 }
                 break;
             }
         }
 
-        $files = array();
-
-        if (isset($options[1][0])) {
-            $facade = new File_Iterator_Facade;
-            $files  = $facade->getFilesAsArray(
-              $options[1], $suffixes
-            );
-        }
+        $files = $this->findFiles($arguments, $excludes, $suffixes);
 
         if (empty($files)) {
-            $this->showHelp();
-            exit(1);
+            $this->showError("No files found to scan.\n");
         }
 
         $this->printVersionString();
@@ -185,9 +246,9 @@ class Bytekit_TextUI_Command
 
             print $formatter->formatResult($result);
 
-            if (isset($xml)) {
+            if (isset($logPmd)) {
                 $formatter = new Bytekit_TextUI_ResultFormatter_Scanner_XML;
-                file_put_contents($xml, $formatter->formatResult($result));
+                file_put_contents($logPmd, $formatter->formatResult($result));
             }
 
             if (!empty($result)) {
@@ -261,6 +322,52 @@ EOT;
     protected function printVersionString()
     {
         print "bytekit-cli @package_version@ by Sebastian Bergmann.\n\n";
+    }
+
+
+    /**
+     * @param  array $directories
+     * @param  array $excludes
+     * @param  array $suffixes
+     * @return array
+     */
+    protected function findFiles(array $directories, array $excludes, array $suffixes)
+    {
+        $files   = array();
+        $finder  = new Symfony\Component\Finder\Finder;
+        $iterate = FALSE;
+
+        try {
+            foreach ($directories as $directory) {
+                if (!is_file($directory)) {
+                    $finder->in($directory);
+                    $iterate = TRUE;
+                } else {
+                    $files[] = realpath($directory);
+                }
+            }
+
+            foreach ($excludes as $exclude) {
+                $finder->exclude($exclude);
+            }
+
+            foreach ($suffixes as $suffix) {
+                $finder->name('*' . $suffix);
+            }
+        }
+
+        catch (Exception $e) {
+            $this->showError($e->getMessage() . "\n");
+            exit(1);
+        }
+
+        if ($iterate) {
+            foreach ($finder as $file) {
+                $files[] = $file->getRealpath();
+            }
+        }
+
+        return $files;
     }
 }
 ?>

@@ -41,7 +41,14 @@
  * @since     File available since Release 1.0.0
  */
 
-require_once 'File/Iterator/Autoload.php';
+require_once 'Symfony/Component/Finder/Finder.php';
+require_once 'Symfony/Component/Finder/Glob.php';
+require_once 'Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php';
+require_once 'Symfony/Component/Finder/Iterator/FilenameFilterIterator.php';
+require_once 'Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php';
+require_once 'Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php';
+require_once 'Symfony/Component/Finder/SplFileInfo.php';
+require_once 'ezc/Base/base.php';
 
 spl_autoload_register(
     function($class) {
@@ -57,7 +64,6 @@ spl_autoload_register(
               'bytekit_scanner_rule_output' => '/Scanner/Rule/Output.php',
               'bytekit_scanner_rule_zendview' => '/Scanner/Rule/ZendView.php',
               'bytekit_textui_command' => '/TextUI/Command.php',
-              'bytekit_textui_getopt' => '/TextUI/Getopt.php',
               'bytekit_textui_resultformatter_disassembler_graph' => '/TextUI/ResultFormatter/Disassembler/Graph.php',
               'bytekit_textui_resultformatter_disassembler_text' => '/TextUI/ResultFormatter/Disassembler/Text.php',
               'bytekit_textui_resultformatter_scanner_text' => '/TextUI/ResultFormatter/Scanner/Text.php',
@@ -73,3 +79,5 @@ spl_autoload_register(
         }
     }
 );
+
+spl_autoload_register(array('ezcBase', 'autoload'));
