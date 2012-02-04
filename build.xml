@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="bytekit-cli" default="phpab">
+ <target name="phpab" description="Generate autoloader scripts">
+  <exec executable="phpab">
+   <arg value="--output" />
+   <arg path="Bytekit/Autoload.php" />
+   <arg value="--template" />
+   <arg path="Bytekit/Autoload.php.in" />
+   <arg value="--indent" />
+   <arg value="              " />
+   <arg path="Bytekit" />
+  </exec>
+ </target>
+</project>

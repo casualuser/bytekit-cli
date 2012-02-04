@@ -42,8 +42,6 @@
  * @since     File available since Release 1.0.0
  */
 
-require_once 'Bytekit/Scanner/Rule.php';
-
 /**
  * Scans for attributes that are not safe-guarded by Zend_View::escape().
  *

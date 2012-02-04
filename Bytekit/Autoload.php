@@ -41,44 +41,35 @@
  * @since     File available since Release 1.0.0
  */
 
-/**
- * Scans for direct output of variables.
- *
- * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright 2009-2012 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version   Release: @package_version@
- * @link      http://github.com/sebastianbergmann/bytekit-cli/tree
- * @since     Class available since Release 1.0.0
- */
-class Bytekit_Scanner_Rule_Output extends Bytekit_Scanner_Rule
-{
-    /**
-     * Scan an oparray for direct output of variables.
-     *
-     * @param array  $oparray
-     * @param string $file
-     * @param string $function
-     * @param array  $result
-     */
-    public function process(array $oparray, $file, $function, array &$result)
-    {
-        foreach ($oparray['code'] as $opline) {
-            if (($opline['mnemonic'] == 'ECHO' ||
-                 $opline['mnemonic'] == 'PRINT') &&
-                $oparray['raw']['opcodes'][$opline['opline']]['lineno'] != 2 &&
-                isset($opline['operands'][0]['value']) &&
-                strpos($opline['operands'][0]['value'], '#!') !== 0) {
-                $this->addViolation(
-                  'Output',
-                  $oparray,
-                  $file,
-                  $oparray['raw']['opcodes'][$opline['opline']]['lineno'],
-                  $function,
-                  $result
-                );
-            }
+require_once 'PHP/File/Iterator/Autoload.php';
+
+spl_autoload_register(
+    function($class) {
+        static $classes = NULL;
+
+        if ($classes === NULL) {
+            $classes = array(
+              'bytekit_disassembler' => '/Disassembler.php',
+              'bytekit_scanner' => '/Scanner.php',
+              'bytekit_scanner_rule' => '/Scanner/Rule.php',
+              'bytekit_scanner_rule_directoutput' => '/Scanner/Rule/DirectOutput.php',
+              'bytekit_scanner_rule_disallowedopcodes' => '/Scanner/Rule/DisallowedOpcodes.php',
+              'bytekit_scanner_rule_output' => '/Scanner/Rule/Output.php',
+              'bytekit_scanner_rule_zendview' => '/Scanner/Rule/ZendView.php',
+              'bytekit_textui_command' => '/TextUI/Command.php',
+              'bytekit_textui_getopt' => '/TextUI/Getopt.php',
+              'bytekit_textui_resultformatter_disassembler_graph' => '/TextUI/ResultFormatter/Disassembler/Graph.php',
+              'bytekit_textui_resultformatter_disassembler_text' => '/TextUI/ResultFormatter/Disassembler/Text.php',
+              'bytekit_textui_resultformatter_scanner_text' => '/TextUI/ResultFormatter/Scanner/Text.php',
+              'bytekit_textui_resultformatter_scanner_xml' => '/TextUI/ResultFormatter/Scanner/XML.php',
+              'bytekit_util' => '/Util.php'
+            );
+        }
+
+        $cn = strtolower($class);
+
+        if (isset($classes[$cn])) {
+            require __DIR__ . $classes[$cn];
         }
     }
-}
-?>
+);

@@ -41,9 +41,6 @@
  * @since     File available since Release 1.0.0
  */
 
-require_once 'File/Iterator/Autoload.php';
-require_once 'Bytekit/TextUI/Getopt.php';
-
 /**
  * TextUI frontend for Bytekit.
  *
@@ -119,8 +116,6 @@ class Bytekit_TextUI_Command
 
                     switch ($rule) {
                         case 'DirectOutput': {
-                            require_once 'Bytekit/Scanner/Rule/DirectOutput.php';
-
                             $rules[] = new Bytekit_Scanner_Rule_DirectOutput;
                         }
                         break;
@@ -129,8 +124,6 @@ class Bytekit_TextUI_Command
                             $disallowedOpcodes = explode(',', $ruleOptions);
                             array_map('trim', $disallowedOpcodes);
 
-                            require_once 'Bytekit/Scanner/Rule/DisallowedOpcodes.php';
-
                             $rules[] = new Bytekit_Scanner_Rule_DisallowedOpcodes(
                               $disallowedOpcodes
                             );
@@ -138,15 +131,11 @@ class Bytekit_TextUI_Command
                         break;
 
                         case 'Output': {
-                            require_once 'Bytekit/Scanner/Rule/Output.php';
-
                             $rules[] = new Bytekit_Scanner_Rule_Output;
                         }
                         break;
 
                         case 'ZendView': {
-                            require_once 'Bytekit/Scanner/Rule/ZendView.php';
-
                             $rules[] = new Bytekit_Scanner_Rule_ZendView;
                         }
                         break;
@@ -190,9 +179,6 @@ class Bytekit_TextUI_Command
         $this->printVersionString();
 
         if (!empty($rules)) {
-            require_once 'Bytekit/Scanner.php';
-            require_once 'Bytekit/TextUI/ResultFormatter/Scanner/Text.php';
-
             $scanner   = new Bytekit_Scanner($rules);
             $result    = $scanner->scan($files);
             $formatter = new Bytekit_TextUI_ResultFormatter_Scanner_Text;
@@ -200,8 +186,6 @@ class Bytekit_TextUI_Command
             print $formatter->formatResult($result);
 
             if (isset($xml)) {
-                require_once 'Bytekit/TextUI/ResultFormatter/Scanner/XML.php';
-
                 $formatter = new Bytekit_TextUI_ResultFormatter_Scanner_XML;
                 file_put_contents($xml, $formatter->formatResult($result));
             }
@@ -214,20 +198,14 @@ class Bytekit_TextUI_Command
         }
 
         if (count($files) == 1) {
-            require_once 'Bytekit/Disassembler.php';
-
             $disassembler = new Bytekit_Disassembler($files[0]);
 
             if (isset($graph)) {
-                require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/Graph.php';
-
                 $result = $disassembler->disassemble(FALSE, $eliminateDeadCode);
 
                 $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_Graph;
                 $formatter->formatResult($result, $graph, $format);
             } else {
-                require_once 'Bytekit/TextUI/ResultFormatter/Disassembler/Text.php';
-
                 $result = $disassembler->disassemble(TRUE, $eliminateDeadCode);
 
                 $formatter = new Bytekit_TextUI_ResultFormatter_Disassembler_Text;

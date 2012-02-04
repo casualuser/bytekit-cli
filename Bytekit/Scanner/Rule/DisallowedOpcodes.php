@@ -41,8 +41,6 @@
  * @since     File available since Release 1.0.0
  */
 
-require_once 'Bytekit/Scanner/Rule.php';
-
 /**
  * Scans for disallowed opcodes.
  *
