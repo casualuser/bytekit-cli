@@ -324,7 +324,6 @@ EOT;
         print "bytekit-cli @package_version@ by Sebastian Bergmann.\n\n";
     }
 
-
     /**
      * @param  array $directories
      * @param  array $excludes

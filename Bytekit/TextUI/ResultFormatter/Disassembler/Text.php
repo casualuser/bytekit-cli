@@ -139,7 +139,10 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_Text
         $b = array_keys($b['ops']);
         $b = $b[0];
 
-        if ($a == $b) return 0;
+        if ($a == $b) {
+            return 0;
+        }
+
         return ($a < $b) ? -1 : 1;
     }
 }
