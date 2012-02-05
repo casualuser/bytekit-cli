@@ -64,7 +64,22 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_Text
         $buffer = '';
 
         foreach ($result as $fileName => $functions) {
-            uasort($functions, array($this, 'compare'));
+            uasort(
+              $functions,
+              function ($a, $b) {
+                  $a = array_keys($a['ops']);
+                  $a = $a[0];
+
+                  $b = array_keys($b['ops']);
+                  $b = $b[0];
+
+                  if ($a == $b) {
+                      return 0;
+                  }
+
+                  return ($a < $b) ? -1 : 1;
+              }
+            );
 
             $first = TRUE;
 
@@ -122,27 +137,5 @@ class Bytekit_TextUI_ResultFormatter_Disassembler_Text
         }
 
         return $buffer;
-    }
-
-    /**
-     * Callback for uasort().
-     *
-     * @param  array $a
-     * @param  array $b
-     * @return integer
-     */
-    protected function compare($a, $b)
-    {
-        $a = array_keys($a['ops']);
-        $a = $a[0];
-
-        $b = array_keys($b['ops']);
-        $b = $b[0];
-
-        if ($a == $b) {
-            return 0;
-        }
-
-        return ($a < $b) ? -1 : 1;
     }
 }
